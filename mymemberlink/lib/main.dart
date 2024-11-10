@@ -1,7 +1,16 @@
+import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
 import 'package:mymemberlink/views/splash_screen.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  // await Firebase.initializeApp();
+  EmailOTP.config(
+    appName: 'MyMemberLink',
+    otpType: OTPType.numeric,
+    emailTheme: EmailTheme.v2,
+    otpLength: 4,
+  );
   runApp(const MainApp());
 }
 

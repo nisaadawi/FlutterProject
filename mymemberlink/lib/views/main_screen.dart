@@ -70,11 +70,11 @@ class _MainScreen extends State<MainScreen> {
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           //loadBulletinData();
-          await Navigator.push(
+          await Navigator.push(//wait for this to happen
           context,
           MaterialPageRoute(
           builder: (content) => const NewBulletinScreen()));
-          loadBulletinData();
+          loadBulletinData();// load back the data
         },
         child: const Icon(Icons.add),
       ),
