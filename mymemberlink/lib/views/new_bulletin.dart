@@ -1,5 +1,4 @@
 import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'package:mymemberlink/myconfig.dart';
@@ -15,8 +14,13 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
   TextEditingController titleController = TextEditingController();
   TextEditingController detailsController = TextEditingController();
 
+ late double screenHeight, screenWidht;
+
   @override
   Widget build(BuildContext context) {
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidht = MediaQuery.of(context).size.width;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text("New Bulletin"),
@@ -37,26 +41,32 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                    TextField(
-                      controller: detailsController,
-                      maxLines: 15,
-                      decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
+                    SizedBox(
+                      height: screenHeight *0.7,
+                      child: TextField(
+                        controller: detailsController,
+                        decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.all(Radius.circular(10)),
+                          ),
+                          hintText: "New Details..."
+                        ),
+                        maxLines: screenHeight ~/ 35,
+                      ),
                     ),
-                      hintText: "What's the Bulletin for today..?")
-                  ),
                   const SizedBox(
                     height: 20,
                   ),
                     MaterialButton(
                     elevation: 10,
                     onPressed: onInsertBulletinDialog,
-                    minWidth: 400,
+                    minWidth: screenWidht,
                     height: 50,
-                    color: Colors.purple[800],
-                    child: const Text("Insert",
-                        style: TextStyle(color: Colors.white))),
+                    color:Theme.of(context).colorScheme.secondary,
+                    child: Text("Insert",
+                        style: TextStyle(
+                         color:Theme.of(context).colorScheme.onSecondary,))
+                        ),
                   ],
                 ),
               ),
@@ -68,6 +78,7 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
     if (titleController.text.isEmpty || detailsController.text.isEmpty){
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Please fill in Bulletin title and details..."),
+        backgroundColor: Colors.red,
         ));
         return;
     }
@@ -99,10 +110,7 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
               ),
               onPressed: () {
                 Navigator.of(context).pop();
-                // ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                //   content: Text("Registration Canceled"),
-                //   backgroundColor: Colors.red,
-                // ));
+  
               },
             ),
           ],

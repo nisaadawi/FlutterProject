@@ -33,6 +33,7 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
+         
           child: Card(
             color: const Color.fromARGB(230, 154, 186, 219),
             elevation: 8,
@@ -42,10 +43,16 @@ class _LoginScreenState extends State<LoginScreen> {
             child: Padding(
               padding: const EdgeInsets.all(24.0),
               child: Column(
+
                 mainAxisSize: MainAxisSize.min,
                 mainAxisAlignment: MainAxisAlignment.center,
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
+                  Image.asset(
+                  'assets/images/login.png',
+                  height: 120, // adjust height as needed
+                  fit: BoxFit.contain,
+                ),
                   Text(
                     "Welcome Back",
                     style: TextStyle(
