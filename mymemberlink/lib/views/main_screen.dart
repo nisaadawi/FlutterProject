@@ -19,6 +19,11 @@ class MainScreen extends StatefulWidget {
 class _MainScreen extends State<MainScreen> {
   List<Bulletin> bulletinList = [];
   final df = DateFormat('dd/MM/yyyy hh:mm a');
+  int numofpage = 1;
+  int currentpage = 1;
+  int numofresult = 0;
+  late double screenWidth, screenHeight;
+  var color;
 
   @override
     void initState() {
@@ -29,53 +34,147 @@ class _MainScreen extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(),
-      body: bulletinList.isEmpty
-      ? const Center(
-        child: Text("no data"),
-      ):ListView.builder(
-        itemCount: bulletinList.length,
-        itemBuilder: (BuildContext context, int index) {
-          return Card(
-            child:ListTile(
-              onLongPress: (){
-                deleteDialog(index);
-              },
+    screenHeight = MediaQuery.of(context).size.height;
+    screenWidth = MediaQuery.of(context).size.width;
 
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    truncateString(bulletinList[index].bulletinTitle.toString(), 30),
-                    style: const TextStyle(
-                      fontSize: 14, fontWeight: FontWeight.bold
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text("Bulletin",
+        style: TextStyle(
+          color: Colors.white,
+          fontSize: 22,
+          fontWeight: FontWeight.bold,
+        ),
+        ),
+        centerTitle: true,
+        backgroundColor: Theme.of(context).primaryColor,
+        actions: [
+          IconButton(
+            onPressed: (){
+              loadBulletinData();
+            }, 
+            icon: const Icon(
+              Icons.refresh_outlined, 
+              color: Colors.white,),
+            )
+        ],
+        iconTheme: const IconThemeData(
+          color: Colors.white
+        ),
+      ),
+      body: Container(
+        decoration: const BoxDecoration(
+        gradient: LinearGradient(
+          colors: [ Color.fromARGB(255, 210, 232, 249),  Color.fromARGB(255, 32, 111, 175)],
+          begin: Alignment.topCenter,
+          end: Alignment.bottomCenter,
+        ),
+      ),
+      child: bulletinList.isEmpty
+          ? const Center(
+              child: Text("No data"),
+            )
+      :Column(
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Container(
+            alignment: Alignment.center,
+            child: Text(
+              "Page: $currentpage/Result: $numofresult",
+              style: const TextStyle(
+                color: Colors.black45,
+                fontWeight: FontWeight.bold
+              ),),
+          ),
+          Expanded(
+            child: ListView.builder(
+            itemCount: bulletinList.length,
+            itemBuilder: (BuildContext context, int index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 2.0),
+                child: Card(
+                  color: Colors.white,
+                  elevation: 5,
+                  child:ListTile(
+                    leading: CircleAvatar(
+                      backgroundColor: Theme.of(context).primaryColor,
+                      child: const Icon(Icons.newspaper, color: Colors.white),
+                    ),
+                    onLongPress: (){
+                      deleteDialog(index);
+                    },
+                    title: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          truncateString(bulletinList[index].bulletinTitle.toString(), 30),
+                          style: TextStyle(
+                            color: Theme.of(context).primaryColor,
+                            fontSize: 15, 
+                            fontWeight: FontWeight.bold
+                          ),
+                        ),
+                        Text(
+                          df.format(DateTime.parse(bulletinList[index].bulletinDate.toString())),
+                          style: const TextStyle(
+                            color: Colors.black54,
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,),
+                        )
+                      ],
+                    ),
+                    subtitle: Text(truncateString(
+                        bulletinList[index].bulletinDetails.toString(), 150),
+                        style: const TextStyle(
+                          color: Colors.black87,
+                          fontSize: 14,
+                        ),
+                        textAlign: TextAlign.justify,
+                    ),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.arrow_forward),
+                      color: Theme.of(context).primaryColor,
+                      onPressed: (){
+                        showBulletinDialog(index);
+                      },
                     ),
                   ),
-                  Text(
-                    df.format(DateTime.parse(bulletinList[index].bulletinDate.toString())),
-                    style: const TextStyle(fontSize: 12),
-                  )
-                ],
-              ),
-              subtitle: Text(truncateString(
-                  bulletinList[index].bulletinDetails.toString(), 150),
-                  textAlign: TextAlign.justify,
-              ),
-              
-              trailing: IconButton(
-                icon: const Icon(Icons.arrow_forward),
-                onPressed: (){
-                  showBulletinDialog(index);
-                },
                 ),
+              );
+            }),
+          ),
+          SizedBox(
+            height: screenHeight * 0.05,
+            child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: numofpage,
+                  scrollDirection: Axis.horizontal,
+                  itemBuilder: (BuildContext context, int index) {
+                    if ((currentpage - 1) == index){
+                      color = Theme.of(context).primaryColor;
+                    }else{
+                      color = Colors.white;
+                    }
+                    return TextButton(
+                      onPressed: (){
+                        currentpage =  index + 1;
+                        loadBulletinData();
+                      }, 
+                      child: Text(
+                        (index+1).toString(),
+                        style: TextStyle(color: color, fontSize: 18),
+                      ));
+                    },
+                  ),)       
+              ],
             ),
-          );
-        },
-      ),
-
+          ),
+      
       drawer: const MainScreenDrawer(),
       floatingActionButton: FloatingActionButton(
+        backgroundColor: Theme.of(context).primaryColor,
         onPressed: () async {
           
           await Navigator.push(//wait for this to happen
@@ -84,14 +183,15 @@ class _MainScreen extends State<MainScreen> {
           builder: (content) => const NewBulletinScreen()));
           loadBulletinData();// load back the data
         },
-        child: const Icon(Icons.add),
+        
+        child: const Icon(Icons.add, color: Colors.white),  
       ),
     );
   }
   
   void loadBulletinData() {
     http.
-        get(Uri.parse("${MyConfig.servername}/memberlink/api/load_bulletin.php"))
+        get(Uri.parse("${MyConfig.servername}/memberlink/api/load_bulletin.php?pageno=$currentpage"))
         .then((response) {
           //print(response);
           if (response.statusCode == 200) {
@@ -105,6 +205,10 @@ class _MainScreen extends State<MainScreen> {
                 Bulletin bulletin = Bulletin.fromJson(item);
                 bulletinList.add(bulletin);
               }
+               numofpage = int.parse(data['numofpage'].toString());
+               numofresult = int.parse(data['numberofresult'].toString());
+               print(numofpage);
+               print(numofresult);
               setState(() {
                 
               });
@@ -120,10 +224,14 @@ class _MainScreen extends State<MainScreen> {
       context: context, 
       builder: (context){
         return AlertDialog(
+          backgroundColor: const Color.fromARGB(255, 243, 246, 251),
           title: Text("Delete \"${truncateString(bulletinList[index].bulletinTitle.toString(), 20)}\"",
-          style: const TextStyle(
-            fontSize: 18
+          style: TextStyle(
+            color: Theme.of(context).primaryColor,
+            fontSize: 18,
+            fontWeight: FontWeight.bold,
           ),
+          textAlign: TextAlign.justify,
         ),
         content: const Text("Are you sure to delete this bulletin?"),
         actions: [
@@ -132,12 +240,21 @@ class _MainScreen extends State<MainScreen> {
               deleteBulletin(index);
               Navigator.pop(context);
             },
-            child: const Text("Yes")),
+            child:  const Text("Yes",
+            style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold
+            ),)
+            ),
             TextButton(
               onPressed: (){
                 Navigator.pop(context);
               }, 
-              child: const Text("No"))
+              child: const Text("No",
+              style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.bold
+            ),))
         ],
         );
         
@@ -179,28 +296,56 @@ class _MainScreen extends State<MainScreen> {
       context: context, 
       builder: (context){
         return AlertDialog(
-          title: Text(bulletinList[index].bulletinTitle.toString()),
-          content: Text(bulletinList[index].bulletinDetails.toString(),
-          textAlign: TextAlign.justify,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20)
+          ),
+          backgroundColor: const Color.fromARGB(255, 243, 246, 251),
+          title: Text(
+            bulletinList[index].bulletinTitle.toString(),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 25,
+              fontWeight: FontWeight.bold,
+          ),
+            textAlign: TextAlign.center
+          ),
+          content: Text(
+            bulletinList[index].bulletinDetails.toString(),
+            textAlign: TextAlign.justify,
+            style: const TextStyle(
+                color: Colors.black87,
+                fontSize: 14,
+              ),
           ),
           actions: [
+            const SizedBox(height: 5),
             TextButton(
-              onPressed: (){
+              onPressed: () async {
                 Navigator.pop(context);
                 Bulletin bulletin = bulletinList[index];
-
-                Navigator.push(
-                  context, 
-                  MaterialPageRoute(
-                    builder: (content) => EditBulletinScreen(bulletin: bulletin)));
+                  await Navigator.push(context,
+                  MaterialPageRoute(builder: (content) => EditBulletinScreen(bulletin: bulletin)));
+                  loadBulletinData();
               }, 
-              child: const Text("Edit")
+              child: Text(
+                "Edit",
+                 style: TextStyle(
+                  color: Colors.blue[700],
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold
+                 ),)
               ),
               TextButton(
               onPressed: (){
                 Navigator.pop(context);
               },
-              child: const Text("Close"))
+              child: const Text(
+                "Close",
+                style: TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold
+                ),
+              ))
           ],
         );
       });

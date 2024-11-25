@@ -9,7 +9,7 @@ class MainScreenDrawer extends StatelessWidget {
         children: [
           const DrawerHeader(
             decoration: BoxDecoration(
-                // You can add color or other styling here if needed
+                color: Colors.white,
                 ),
             child: Text('Drawer Header'),
           ),

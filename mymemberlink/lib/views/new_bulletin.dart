@@ -23,56 +23,88 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("New Bulletin"),
+        title: const Text(
+          "New Bulletin",
+          style: TextStyle(
+            color: Colors.white,
+            fontSize: 22,
+            fontWeight: FontWeight.bold
+          ),),
+          centerTitle: true,
+          backgroundColor: Theme.of(context).primaryColor,
+          iconTheme: const IconThemeData(color: Colors.white),
       ),
-      body: SingleChildScrollView(
+      body: Container(
+          decoration: BoxDecoration(
+            gradient: LinearGradient(
+              colors: [Colors.blue.shade50, Colors.blue.shade200],
+              begin: Alignment.topCenter,
+              end: Alignment.bottomCenter,
+            ),
+          ),
+           child: SingleChildScrollView(
               child: Padding(
                 padding: const EdgeInsets.all(15.0),
                 child: Column(
                   children: [
-                    TextField(
-                      controller: titleController,
-                      decoration: const InputDecoration(
-                      border: OutlineInputBorder(
-                      borderRadius: BorderRadius.all(Radius.circular(10)),
-                    ),
-                      hintText: "Bulletin title")
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    SizedBox(
-                      height: screenHeight *0.7,
-                      child: TextField(
-                        controller: detailsController,
-                        decoration: const InputDecoration(
-                          border: OutlineInputBorder(
+                    const SizedBox(height: 10),
+                    Card(
+                    child: Padding(
+                      padding: const EdgeInsets.all(12.0),
+                      child: Column(
+                        children: [
+                          TextField(
+                            controller: titleController,
+                            decoration: const InputDecoration(
+                            border: OutlineInputBorder(
                             borderRadius: BorderRadius.all(Radius.circular(10)),
                           ),
-                          hintText: "New Details..."
-                        ),
-                        maxLines: screenHeight ~/ 35,
+                            hintText: "Bulletin title",
+                            labelText: "Title",) 
+                          ),
+                        const SizedBox(
+                            height: 10),
+                        TextField(
+                            controller: detailsController,
+                            decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                              hintText: "New Details...",
+                              labelText:"Details",
+                            ),
+                          maxLines: screenHeight ~/ 35,
+                         ),
+                        ],
                       ),
                     ),
-                  const SizedBox(
-                    height: 20,
+                    ),
+                  const SizedBox(height: 20,
                   ),
-                    MaterialButton(
-                    elevation: 10,
-                    onPressed: onInsertBulletinDialog,
-                    minWidth: screenWidht,
-                    height: 50,
-                    color:Theme.of(context).colorScheme.secondary,
-                    child: Text("Insert",
-                        style: TextStyle(
-                         color:Theme.of(context).colorScheme.onSecondary,))
+                    Center(
+                      child: MaterialButton(
+                      elevation: 10,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(25),
+                      ),
+                      onPressed: onInsertBulletinDialog,
+                      minWidth: screenWidht * 0.8,
+                      height: 50,
+                      color: Theme.of(context).primaryColor,
+                      child: const Text("Insert",
+                          style: TextStyle(
+                           color: Colors.white, 
+                           fontSize: 16)
+                           )
+                          ),
                         ),
-                  ],
+                      ],
+                    ),
+                  ),
                 ),
               ),
-            ),
-      );
-  }
+            );
+          }
 
   void onInsertBulletinDialog() {
     if (titleController.text.isEmpty || detailsController.text.isEmpty){

@@ -1,4 +1,6 @@
 <?php
+date_default_timezone_set('Asia/Kuala_Lumpur'); 
+
 if (!isset($_POST)) {
 	$response = array('status' => 'failed', 'data' => null);
     sendJsonResponse($response);
@@ -9,8 +11,9 @@ include_once("db_config.php");
 $bulletinid = $_POST['bulletinid'];
 $title = addslashes($_POST['title']);
 $details =addslashes( $_POST['details']);
+$date = date('Y-m-d H:i:s');
 
-$sqlupdatebulletin="UPDATE `tbl_bulletin` SET `bulletin_title`='$title',`bulletin_details`='$details' WHERE `bulletin_id` = '$bulletinid'";
+$sqlupdatebulletin="UPDATE `tbl_bulletin` SET `bulletin_title`='$title',`bulletin_details`='$details', `bulletin_date`='$date' WHERE `bulletin_id` = '$bulletinid'";
 
 if ($conn->query($sqlupdatebulletin) === TRUE) {
 	$response = array('status' => 'success', 'data' => null);
@@ -19,7 +22,6 @@ if ($conn->query($sqlupdatebulletin) === TRUE) {
 	$response = array('status' => 'failed', 'data' => null);
 	sendJsonResponse($response);
 }
-	
 	
 function sendJsonResponse($sentArray)
 {
