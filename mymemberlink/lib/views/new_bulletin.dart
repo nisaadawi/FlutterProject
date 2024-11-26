@@ -35,9 +35,9 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
           iconTheme: const IconThemeData(color: Colors.white),
       ),
       body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.blue.shade50, Colors.blue.shade200],
+              colors: [Color.fromARGB(255, 210, 232, 249),  const Color.fromARGB(255, 32, 111, 175)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -119,16 +119,24 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
       return AlertDialog(
           shape: const RoundedRectangleBorder(
               borderRadius: BorderRadius.all(Radius.circular(20.0))),
-          title: const Text(
+          title: Text(
             "Post Bulletin",
-            style: TextStyle(),
+            style: TextStyle(
+              color: Theme.of(context).primaryColor,
+              fontSize: 22,
+              fontWeight: FontWeight.bold,
+            ),
           ),
           content: const Text("Are you sure to post the news?", style: TextStyle()),
           actions: <Widget>[
             TextButton(
-              child: const Text(
+              child: Text(
                 "Yes",
-                style: TextStyle(),
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               onPressed: () {
                 insertBulletin();
@@ -136,9 +144,13 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
               },
             ),
             TextButton(
-              child: const Text(
+              child:  Text(
                 "No",
-                style: TextStyle(),
+                style: TextStyle(
+                  color: Theme.of(context).primaryColor,
+                  fontSize: 16,
+                  fontWeight: FontWeight.bold,
+                ),
               ),
               onPressed: () {
                 Navigator.of(context).pop();
@@ -162,10 +174,12 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
         var data = jsonDecode(response.body);
         if (data['status'] == "success") {
           Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Post Success!"),
-            backgroundColor: Color.fromARGB(255, 59, 216, 127),
-          ));
+          showCustomDialog(
+            context,
+            "Success",
+            "Successfully add new bulletin!",
+            "assets/gif/dribbble-success-2.gif", // Replace with your image or GIF path
+          );
         }else{
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
             content: Text("Post Failed.."),
@@ -175,4 +189,57 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
       }
     });
   }
+  void showCustomDialog(BuildContext context, String title, String message, String imagePath) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Theme.of(context).primaryColor,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              imagePath, // Image or GIF path
+              height: 150, // Adjust size based on your needs
+              fit: BoxFit.cover,
+            ),
+            const SizedBox(height: 15),
+            Text(
+              message,
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog
+            },
+            child: Text(
+              "OK",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}  
+
 }

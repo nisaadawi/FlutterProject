@@ -217,19 +217,15 @@ class _MainScreen extends State<MainScreen> {
     http.
         get(Uri.parse("${MyConfig.servername}/memberlink/api/load_bulletin.php?pageno=$currentpage"))
         .then((response) {
-          print("Response Body: ${response.body}");
           if (response.statusCode == 200) {
             var data = jsonDecode(response.body);
             if (data['status']== "success") {
               var result = data['data']['bulletin'];
-              //print("Response: $result");  // Add this line to check the raw response data
 
               bulletinList.clear();
 
               for(var item in result){
-                //print("Raw Bulletin Data: $item");
                 Bulletin bulletin = Bulletin.fromJson(item);
-                print("Bulletin ID: ${bulletin.bulletinId}, Is Edited: ${bulletin.isEdited}");
                 bulletinList.add(bulletin);
               }
                numofpage = int.parse(data['numofpage'].toString());
@@ -255,7 +251,7 @@ class _MainScreen extends State<MainScreen> {
             fontSize: 18,
             fontWeight: FontWeight.bold,
           ),
-          textAlign: TextAlign.justify,
+          textAlign: TextAlign.left,
         ),
         content: const Text("Are you sure to delete this bulletin?"),
         actions: [
@@ -291,15 +287,17 @@ class _MainScreen extends State<MainScreen> {
       body: {"bulletinid": bulletinList[index].bulletinId.toString()}).then((response){
         if (response.statusCode == 200){
           var data = jsonDecode(response.body);
-          //log(data.toString());
           if(data['status'] == "success"){
-            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Succes"),
-              backgroundColor: Colors.green));
+            showCustomDialog(
+            context,
+            "Success",
+            "Successfully deleted the bulletin!",
+            "assets/gif/trash-bin.gif", // Replace with your image or GIF path
+          );
             loadBulletinData();
           }else{
              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-              content: Text("Failed"),
+              content: Text("Failed to delete"),
               backgroundColor: Colors.red));
           }
         }
@@ -375,6 +373,57 @@ class _MainScreen extends State<MainScreen> {
       });
   }
   
+void showCustomDialog(BuildContext context, String title, String message, String imagePath) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        title: Text(
+          title,
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 20,
+            color: Theme.of(context).primaryColor,
+          ),
+          textAlign: TextAlign.center,
+        ),
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Image.asset(
+              imagePath, // Image or GIF path
+              height: 150, // Adjust size based on your needs
+              fit: BoxFit.cover,
+            ),
+            const SizedBox(height: 15),
+            Text(
+              message,
+              style: const TextStyle(fontSize: 16),
+              textAlign: TextAlign.center,
+            ),
+          ],
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.pop(context); // Close the dialog
+            },
+            child: Text(
+              "OK",
+              style: TextStyle(
+                fontWeight: FontWeight.bold,
+                fontSize: 16,
+                color: Theme.of(context).primaryColor,
+              ),
+            ),
+          ),
+        ],
+      );
+    },
+  );
+}  
 
-  
 }

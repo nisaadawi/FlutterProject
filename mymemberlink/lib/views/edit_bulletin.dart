@@ -46,9 +46,9 @@
           iconTheme: const IconThemeData(color: Colors.white),
         ),
         body: Container(
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             gradient: LinearGradient(
-              colors: [Colors.blue.shade50, Colors.blue.shade200],
+              colors: [Color.fromARGB(255, 210, 232, 249),  Color.fromARGB(255, 32, 111, 175)],
               begin: Alignment.topCenter,
               end: Alignment.bottomCenter,
             ),
@@ -129,7 +129,12 @@
         context: context, 
         builder: (context){
           return AlertDialog(
-            title: const Text("Update Bulletin"),
+            title: Text("Update Bulletin",
+            style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 22,
+                    fontWeight: FontWeight.bold,
+            ),),
             content: const Text("Are you sure to update the bulletin?"),
             actions: [
               TextButton(
@@ -137,12 +142,22 @@
                   updateBulletin();
                   Navigator.of(context).pop();
                 }, 
-                child: const Text("Yes")),
+                child: Text("Yes",
+                style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                ),)),
                 TextButton(
                   onPressed: (){
                     Navigator.pop(context);
                   }, 
-                  child:  const Text("No"))
+                  child: Text("No",
+                  style: TextStyle(
+                    color: Theme.of(context).primaryColor,
+                    fontSize: 16,
+                    fontWeight: FontWeight.bold,
+                  ),))
             ],
           );
         });
@@ -170,10 +185,12 @@
               var data = jsonDecode(response.body);
               if (data['status'] == "success") {
                 Navigator.pop(context);
-                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-                  content: Text("Update Success"),
-                  backgroundColor: Colors.green,
-                ));
+                 showCustomDialog(
+                  context,
+                  "Success",
+                  "Successfully edit the bulletin!",
+                  "assets/gif/pencil.gif", // Replace with your image or GIF path
+                );
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
                   content: Text("Update Failed"),
@@ -188,4 +205,56 @@
               );
             });
           }
+          void showCustomDialog(BuildContext context, String title, String message, String imagePath) {
+          showDialog(
+            context: context,
+            builder: (BuildContext context) {
+              return AlertDialog(
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(15),
+                ),
+                title: Text(
+                  title,
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: Theme.of(context).primaryColor,
+                  ),
+                  textAlign: TextAlign.center,
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Image.asset(
+                      imagePath, // Image or GIF path
+                      height: 150, // Adjust size based on your needs
+                      fit: BoxFit.cover,
+                    ),
+                    const SizedBox(height: 15),
+                    Text(
+                      message,
+                      style: const TextStyle(fontSize: 16),
+                      textAlign: TextAlign.center,
+                    ),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context); // Close the dialog
+                    },
+                    child: Text(
+                      "OK",
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16,
+                        color: Theme.of(context).primaryColor,
+                      ),
+                    ),
+                  ),
+                ],
+              );
+            },
+          );
+        }  
         }
