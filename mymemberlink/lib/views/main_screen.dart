@@ -7,6 +7,7 @@ import 'package:http/http.dart' as http;
 import 'package:mymemberlink/views/drawer_main_screen.dart';
 import 'package:mymemberlink/views/edit_bulletin.dart';
 import 'package:mymemberlink/views/new_bulletin.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 
 class MainScreen extends StatefulWidget {
@@ -25,10 +26,13 @@ class _MainScreen extends State<MainScreen> {
   late double screenWidth, screenHeight;
   var color;
 
+  Set<String> viewedBulletins = {};
+
   @override
     void initState() {
       // TODO: implement initState
       super.initState();
+      loadViewedBulletins();
       loadBulletinData();
     }
 
@@ -126,19 +130,31 @@ class _MainScreen extends State<MainScreen> {
                                 fontWeight: FontWeight.bold,),
                                 ),
                             if (bulletinList[index].isEdited)
+                            const Padding(
+                              padding: EdgeInsets.only(left: 8.0),
+                              child: Text(
+                                "Edited",
+                                style: TextStyle(
+                                  color: Colors.orange,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            if (!viewedBulletins.contains(bulletinList[index].bulletinId)) // Check if it's new
                             Padding(
-                              padding: const EdgeInsets.only(left: 8.0),
+                              padding: const EdgeInsets.only(left:39.0),
                               child: Container(
-                                // padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
-                                // decoration: BoxDecoration(
-                                //   color: Colors.orange,
-                                //   borderRadius: BorderRadius.circular(12),
-                                // ),
+                                padding: const EdgeInsets.symmetric(horizontal: 15.0, vertical: 2.0),
+                                decoration: BoxDecoration(
+                                  color: Colors.green,
+                                  borderRadius: BorderRadius.circular(12),
+                                ),
                                 child: const Text(
-                                  "Edited",
+                                  "New",
                                   style: TextStyle(
-                                    color: Colors.orange,
-                                    fontSize: 12,
+                                    color: Colors.white,
+                                    fontSize: 14,
                                     fontWeight: FontWeight.bold,
                                   ),
                                 ),
@@ -146,7 +162,6 @@ class _MainScreen extends State<MainScreen> {
                             ),
                           ],
                         ),
-                        
                       ],
                     ),
                     subtitle: Text(truncateString(
@@ -312,8 +327,32 @@ class _MainScreen extends State<MainScreen> {
       return str;
     }
   }
+
+  void loadViewedBulletins() async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // Load the list of viewed bulletins (default to empty list if not found)
+  List<String> viewedBulletinsList = prefs.getStringList('viewedBulletins') ?? [];
+  viewedBulletins = Set<String>.from(viewedBulletinsList); // Convert List to Set
+
+  setState(() {});
+}
+
+void markAsViewed(String bulletinId) async {
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+
+  // Add the bulletinId to the set of viewed bulletins
+  viewedBulletins.add(bulletinId);
+
+  // Save the updated set as a list
+  await prefs.setStringList('viewedBulletins', viewedBulletins.toList());
+
+  setState(() {});
+}
   
   void showBulletinDialog(int index) {
+    markAsViewed(bulletinList[index].bulletinId!);
+
     showDialog(
       context: context, 
       builder: (context){
