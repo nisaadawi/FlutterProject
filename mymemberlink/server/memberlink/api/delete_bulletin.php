@@ -1,5 +1,5 @@
 <?php
-if(isset($_POST)){
+if(!isset($_POST)){
     $response = array('status' => 'failed', 'data' => null);
     sendJsonResponse($response);
     die;
@@ -8,9 +8,9 @@ if(isset($_POST)){
 include_once('db_config.php');
 $bulletinid = ($_POST['bulletinid']);
 
-$sqldeletebulletin = "DELETE FROM `tbl_bulletin` WHERE `bulletin_id` = `$bulletinid`";
+$sqldeletebulletin = "DELETE FROM `tbl_bulletin` WHERE `bulletin_id` = $bulletinid";
 
-if ( $conn->query( $sqldeletenews ) === TRUE ) {
+if ( $conn->query( $sqldeletebulletin ) === TRUE ) {
     $response = array( 'status' => 'success', 'data' => null );
     sendJsonResponse( $response );
 } else {
