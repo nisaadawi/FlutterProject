@@ -1,7 +1,7 @@
   import 'dart:convert';
 
   import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
+  import 'package:intl/intl.dart';
   import 'package:mymemberlink/models/bulletin.dart';
   import 'package:http/http.dart' as http;
   import 'package:mymemberlink/myconfig.dart';
@@ -153,13 +153,18 @@ import 'package:intl/intl.dart';
       String details = detailsController.text.toString();
       String date = DateFormat('yyyy-MM-dd HH:mm:ss').format(DateTime.now());
 
+      // Check if title or details were edited
+       // ignore: unused_local_variable
+       bool isEdited = (title != widget.bulletin.bulletinTitle) || (details != widget.bulletin.bulletinDetails);
+      
       http.post(
         Uri.parse("${MyConfig.servername}/memberlink/api/update_bulletin.php"),
         body: {
           "bulletinid": widget.bulletin.bulletinId.toString(),
           "title": title,
           "details": details,
-          "date": date
+          "date": date,
+          "isEdited": isEdited ? "1" : "0",
         }).then((response){
           if (response.statusCode == 200) {
               var data = jsonDecode(response.body);
@@ -174,8 +179,13 @@ import 'package:intl/intl.dart';
                   content: Text("Update Failed"),
                   backgroundColor: Colors.red,
                 ));
-              }
-            }
-        });
-    }
-  }
+              }} else {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Server Error"), backgroundColor: Colors.red),
+                );}}).catchError((e) {
+              ScaffoldMessenger.of(context).showSnackBar(
+                const SnackBar(content: Text("Network Error"), backgroundColor: Colors.red),
+              );
+            });
+          }
+        }

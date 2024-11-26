@@ -116,13 +116,37 @@ class _MainScreen extends State<MainScreen> {
                             fontWeight: FontWeight.bold
                           ),
                         ),
-                        Text(
-                          df.format(DateTime.parse(bulletinList[index].bulletinDate.toString())),
-                          style: const TextStyle(
-                            color: Colors.black54,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold,),
-                        )
+                        Row(
+                          children: [
+                            Text(
+                              df.format(DateTime.parse(bulletinList[index].bulletinDate.toString())),
+                              style: const TextStyle(
+                                color: Colors.black54,
+                                fontSize: 12,
+                                fontWeight: FontWeight.bold,),
+                                ),
+                            if (bulletinList[index].isEdited)
+                            Padding(
+                              padding: const EdgeInsets.only(left: 8.0),
+                              child: Container(
+                                // padding: const EdgeInsets.symmetric(horizontal: 5.0, vertical: 2.0),
+                                // decoration: BoxDecoration(
+                                //   color: Colors.orange,
+                                //   borderRadius: BorderRadius.circular(12),
+                                // ),
+                                child: const Text(
+                                  "Edited",
+                                  style: TextStyle(
+                                    color: Colors.orange,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        
                       ],
                     ),
                     subtitle: Text(truncateString(
@@ -193,28 +217,28 @@ class _MainScreen extends State<MainScreen> {
     http.
         get(Uri.parse("${MyConfig.servername}/memberlink/api/load_bulletin.php?pageno=$currentpage"))
         .then((response) {
-          //print(response);
+          print("Response Body: ${response.body}");
           if (response.statusCode == 200) {
             var data = jsonDecode(response.body);
             if (data['status']== "success") {
               var result = data['data']['bulletin'];
-              
+              //print("Response: $result");  // Add this line to check the raw response data
+
               bulletinList.clear();
 
               for(var item in result){
+                //print("Raw Bulletin Data: $item");
                 Bulletin bulletin = Bulletin.fromJson(item);
+                print("Bulletin ID: ${bulletin.bulletinId}, Is Edited: ${bulletin.isEdited}");
                 bulletinList.add(bulletin);
               }
                numofpage = int.parse(data['numofpage'].toString());
                numofresult = int.parse(data['numberofresult'].toString());
-               print(numofpage);
-               print(numofresult);
-              setState(() {
-                
-              });
+               
+              setState(() {});
             }
           }else{
-            print("error");
+            print("Error: ${response.statusCode}");
           }
     });
   }
