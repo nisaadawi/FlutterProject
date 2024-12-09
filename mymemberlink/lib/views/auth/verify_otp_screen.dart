@@ -1,6 +1,6 @@
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
-import 'package:mymemberlink/views/reset_password_screen.dart';
+import 'package:mymemberlink/views/auth/reset_password_screen.dart';
 import 'package:pinput/pinput.dart';
 
 class VerificationScreen extends StatefulWidget {
@@ -34,11 +34,6 @@ class _VerificationScreenState extends State<VerificationScreen> {
             mainAxisAlignment: MainAxisAlignment.start,
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
-              // Lottie.asset(
-              //   'assets/video/otp.json',
-              //   height: 325,
-              //   width: 325,
-              // ),
               SizedBox(height: 40),
               Text(
                 'Enter your Verification code',

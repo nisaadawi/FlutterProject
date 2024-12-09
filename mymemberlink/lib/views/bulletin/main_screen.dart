@@ -4,9 +4,9 @@ import 'package:intl/intl.dart';
 import 'package:mymemberlink/models/bulletin.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:http/http.dart' as http;
-import 'package:mymemberlink/views/drawer_main_screen.dart';
-import 'package:mymemberlink/views/edit_bulletin.dart';
-import 'package:mymemberlink/views/new_bulletin.dart';
+import 'package:mymemberlink/views/shared/drawer_main_screen.dart';
+import 'package:mymemberlink/views/bulletin/edit_bulletin.dart';
+import 'package:mymemberlink/views/bulletin/new_bulletin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 

@@ -1,6 +1,6 @@
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
-import 'package:mymemberlink/views/verify_otp_screen.dart';
+import 'package:mymemberlink/views/auth/verify_otp_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
 const ForgotPasswordScreen({super.key});

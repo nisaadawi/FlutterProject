@@ -3,7 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:http/http.dart' as http;
-import 'package:mymemberlink/views/login_screen.dart';
+import 'package:mymemberlink/views/auth/login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String email;

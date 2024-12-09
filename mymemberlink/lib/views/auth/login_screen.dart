@@ -1,9 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:mymemberlink/myconfig.dart';
-import 'package:mymemberlink/views/forgot_password_screen.dart';
-import 'package:mymemberlink/views/main_screen.dart';
-import 'package:mymemberlink/views/register_screen.dart';
+import 'package:mymemberlink/views/auth/forgot_password_screen.dart';
+import 'package:mymemberlink/views/bulletin/main_screen.dart';
+import 'package:mymemberlink/views/auth/register_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
@@ -33,7 +33,6 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 24.0),
-         
           child: Card(
             color: const Color.fromARGB(230, 154, 186, 219),
             elevation: 8,
