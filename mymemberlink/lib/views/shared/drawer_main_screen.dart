@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mymemberlink/views/bulletin/main_screen.dart';
 import 'package:mymemberlink/views/events/event_screen.dart';
 
 class MainScreenDrawer extends StatelessWidget {
@@ -15,10 +16,11 @@ class MainScreenDrawer extends StatelessWidget {
             child: Text('Drawer Header'),
           ),
           ListTile(
+            title: const Text("Bulletin"),
             onTap: () {
-              // Define onTap actions here if needed
-            },
-            title: const Text("Newsletter"),
+              Navigator.push(context,
+                MaterialPageRoute(builder: (content) => const MainScreen()));
+            }, 
           ),
           ListTile(
             title: const Text("Events"),
