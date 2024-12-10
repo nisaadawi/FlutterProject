@@ -19,6 +19,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
   String startDateTime = "", endDateTime = "";
   String eventtypevalue = 'Conference';
   var selectedStartDateTime, selectedEndDateTime;
+  
   var items = [
     'Conference',
     'Exibition',
@@ -52,7 +53,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
           child: Padding(
             padding: const EdgeInsets.all(16.0), // Add padding inside the card
             child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
+              //crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
                 Form(
                   key: _formKey,
@@ -79,12 +80,10 @@ class _NewEventScreenState extends State<NewEventScreen> {
                     const SizedBox(
                       height: 10,
                     ),
-                  ],
-                ),
-                ),
+
                 TextFormField(
                   validator: (value) => 
-                  value!.isEmpty ? "Enter Title": null,
+                    value!.isEmpty ? "Enter Title": null,
                   controller: titleController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
@@ -192,7 +191,6 @@ class _NewEventScreenState extends State<NewEventScreen> {
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
-
                     ),
                     labelStyle: TextStyle(
                     ),
@@ -205,10 +203,14 @@ class _NewEventScreenState extends State<NewEventScreen> {
                       child: Text(items),
                     );
                   }).toList(), 
-                  onChanged: (String? newValue){},
+                  onChanged: (String? newValue){
+                    setState(() {
+                      eventtypevalue = newValue!;
+                    });
+                  },
                   ),
-                  const SizedBox(height: 10),
-                    TextFormField(
+                const SizedBox(height: 10),
+                TextFormField(
                     validator: (value) => 
                     value!.isEmpty ? "Enter Description": null,
                     controller: descriptionController,
@@ -265,13 +267,17 @@ class _NewEventScreenState extends State<NewEventScreen> {
                       style: TextStyle(
                         color: Theme.of(context).colorScheme.onSecondary
                       ),
-                    ),)
+                    ),
+                  ),
               ],
             ),
           ),
-        ),
-      ),
-    );
+        ]
+        )
+        )    
+        )
+        )      
+        );
   }
   
   void showSelectionDialog() {

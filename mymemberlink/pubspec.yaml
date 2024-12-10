@@ -34,6 +34,7 @@ flutter:
   assets:
       - assets/images/login.png
       - assets/images/camera.png
+      - assets/images/na.png
       - assets/gif/dribbble-success-2.gif
       - assets/gif/trash-bin.gif
       - assets/gif/pencil.gif
