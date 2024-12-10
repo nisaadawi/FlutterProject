@@ -1,9 +1,12 @@
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
+import 'package:http/http.dart' as http;
+import 'package:mymemberlink/myconfig.dart';
 
 class NewEventScreen extends StatefulWidget {
   const NewEventScreen({super.key});
@@ -14,7 +17,8 @@ class NewEventScreen extends StatefulWidget {
 
 class _NewEventScreenState extends State<NewEventScreen> {
   String startDateTime = "", endDateTime = "";
-  String dropdowndefaultvalue = 'Conference';
+  String eventtypevalue = 'Conference';
+  var selectedStartDateTime, selectedEndDateTime;
   var items = [
     'Conference',
     'Exibition',
@@ -23,6 +27,11 @@ class _NewEventScreenState extends State<NewEventScreen> {
   ];
   late double screenWidth, screenHeight;
   File? _image;
+
+  final _formKey = GlobalKey<FormState>();
+  TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
+  TextEditingController locationController = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +54,9 @@ class _NewEventScreenState extends State<NewEventScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Form(child: Column(
+                Form(
+                  key: _formKey,
+                  child: Column(
                   children: [
                     GestureDetector(
                       onTap: () {
@@ -72,6 +83,9 @@ class _NewEventScreenState extends State<NewEventScreen> {
                 ),
                 ),
                 TextFormField(
+                  validator: (value) => 
+                  value!.isEmpty ? "Enter Title": null,
+                  controller: titleController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -103,7 +117,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                               initialTime: TimeOfDay.now(),
                             ).then((selectTime) {
                               if (selectTime != null) {
-                                DateTime selectedDateTime = DateTime(
+                                 selectedStartDateTime = DateTime(
                                   selectedDate.year,
                                   selectedDate.month,
                                   selectedDate.day,
@@ -111,7 +125,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                   selectTime.minute,
                                 );
                                 var formatter = DateFormat('dd-MM-yyyy hh:mm a');
-                                String formattedDate = formatter.format(selectedDateTime);
+                                String formattedDate = formatter.format(selectedStartDateTime);
                                 startDateTime = formattedDate.toString();
                                 setState(() {
                                 });
@@ -141,7 +155,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                               initialTime: TimeOfDay.now(),
                             ).then((selectTime) {
                               if (selectTime != null) {
-                                DateTime selectedDateTime = DateTime(
+                                 selectedEndDateTime = DateTime(
                                   selectedDate.year,
                                   selectedDate.month,
                                   selectedDate.day,
@@ -149,7 +163,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                                   selectTime.minute,
                                 );
                                 var formatter = DateFormat('dd-MM-yyyy hh:mm a');
-                                String formattedDate = formatter.format(selectedDateTime);
+                                String formattedDate = formatter.format(selectedEndDateTime);
                                 endDateTime = formattedDate.toString();
                                 setState(() {
                                 });
@@ -163,6 +177,9 @@ class _NewEventScreenState extends State<NewEventScreen> {
                 ),
                 const SizedBox(height: 10),
                 TextFormField(
+                  validator: (value) =>
+                            value!.isEmpty ? "Enter Location" : null,
+                        controller: locationController,
                   decoration: const InputDecoration(
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
@@ -180,7 +197,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
                     labelStyle: TextStyle(
                     ),
                   ),
-                  value: dropdowndefaultvalue,
+                  value: eventtypevalue,
                   icon: const Icon(Icons.keyboard_arrow_down),
                   items: items.map((String items) {
                     return DropdownMenuItem(
@@ -191,7 +208,10 @@ class _NewEventScreenState extends State<NewEventScreen> {
                   onChanged: (String? newValue){},
                   ),
                   const SizedBox(height: 10),
-                  TextFormField(
+                    TextFormField(
+                    validator: (value) => 
+                    value!.isEmpty ? "Enter Description": null,
+                    controller: descriptionController,
                     maxLines: 10,
                     decoration: const InputDecoration(
                       border: OutlineInputBorder(
@@ -203,7 +223,40 @@ class _NewEventScreenState extends State<NewEventScreen> {
                   const SizedBox(height: 10),
                   MaterialButton(
                     elevation: 10,
-                    onPressed: (){},
+                    onPressed: (){
+                      if (!_formKey.currentState!.validate()){
+                        print("still here");
+                        return;
+                      }
+                      if (_image == null){
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                          content: Text("Please take photo"),
+                          backgroundColor: Colors.red)
+                        );
+                        return;
+                      }
+                      double filesize = getFileSize(_image!);
+
+                      if (filesize > 100) {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Image size too large"),
+                            backgroundColor: Colors.red,
+                          ));
+                          return;
+                        }
+                      
+                      if (startDateTime == "" || endDateTime == "") {
+                          ScaffoldMessenger.of(context)
+                              .showSnackBar(const SnackBar(
+                            content: Text("Please select start/end date"),
+                            backgroundColor: Colors.red,
+                          ));
+                          return;
+                        }
+
+                        insertEventDialog();
+                    },
                     minWidth: screenWidth,
                     height: 50,
                     color: Theme.of(context).colorScheme.secondary,
@@ -287,8 +340,8 @@ class _NewEventScreenState extends State<NewEventScreen> {
       maxHeight: 800,
       maxWidth: 800,
     );
-    print("BEFORE CROP: ");
-    print(getFileSize(_image!));
+    // print("BEFORE CROP: ");
+    // print(getFileSize(_image!));
     if (pickedFile != null) {
       _image = File(pickedFile.path);
       // setState(() {
@@ -314,17 +367,89 @@ class _NewEventScreenState extends State<NewEventScreen> {
         ),
       ]
       );
-      if (CroppedFile != null){
-        File imageFile = File(croppedFile!.path);
+      if (croppedFile != null){
+        File imageFile = File(croppedFile.path);
       _image = imageFile;
       print(getFileSize(_image!));
       setState(() {});
       }
   }
   
-  Object? getFileSize(File file) {
+  double getFileSize(File file) {
     int sizeInBytes = file.lengthSync();
-    double sizeInMb = sizeInBytes / (1024 * 1024);
-    return sizeInMb;
+    double sizeInKB = (sizeInBytes / (1024 * 1024)) * 1000;
+    return sizeInKB;
   }
+  
+  void insertEventDialog() {
+    showDialog(
+      context: context, 
+      builder: (BuildContext context){
+        return AlertDialog(
+          title: const Text(
+            "Insert Event",
+            style: TextStyle(),
+          ),
+          content: const Text("Are you sure ?",style: TextStyle()),
+          actions: [
+            TextButton(
+              onPressed: (){
+                insertEvent();
+                Navigator.of(context).pop();
+              }, 
+              child: const Text("Yes", style: TextStyle()),
+            )
+          ],
+        );
+      });
+  }
+  
+  void insertEvent() {
+    String title = titleController.text;
+    String location = locationController.text;
+    String description = descriptionController.text;
+    String start = selectedStartDateTime.toString();
+    String end = selectedEndDateTime.toString();
+    String image = base64Encode(_image!.readAsBytesSync());
+    
+   http.post(
+        Uri.parse("${MyConfig.servername}/memberlink/api/insert_event.php"),
+        body: {
+          "title": title,
+          "location": location,
+          "description": description,
+          "eventtype": eventtypevalue,
+          "start": start,
+          "end": end,
+          "image": image
+        }).then((response) {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        // log(response.body);
+        if (data['status'] == "success") {
+          Navigator.pop(context);
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Insert Success"),
+            backgroundColor: Colors.green,
+          ));
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+            content: Text("Insert Failed"),
+            backgroundColor: Colors.red,
+          ));
+        }
+      }else {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text("Server Error: ${response.statusCode}"),
+        backgroundColor: Colors.red,
+      ));
+    }
+  }).catchError((error) {
+    print("Error: $error");
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+      content: Text("Error: $error"),
+      backgroundColor: Colors.red,
+    ));
+  });
 }
+    }
