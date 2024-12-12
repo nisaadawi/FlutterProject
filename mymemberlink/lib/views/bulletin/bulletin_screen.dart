@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:mymemberlink/models/bulletin.dart';
 import 'package:mymemberlink/myconfig.dart';
@@ -10,14 +11,15 @@ import 'package:mymemberlink/views/bulletin/new_bulletin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 
-class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+class BulletinScreen extends StatefulWidget {
+  
+  const BulletinScreen ({super.key});
 
   @override
-  State<MainScreen> createState() => _MainScreen();
+  State<BulletinScreen > createState() => _BulletinScreen();
 }
 
-class _MainScreen extends State<MainScreen> {
+class _BulletinScreen extends State<BulletinScreen > {
   List<Bulletin> bulletinList = [];
   final df = DateFormat('dd/MM/yyyy hh:mm a');
   int numofpage = 1;
@@ -43,33 +45,66 @@ class _MainScreen extends State<MainScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Bulletin",
-        style: TextStyle(
-          color: Colors.white,
-          fontSize: 22,
-          fontWeight: FontWeight.bold,
-        ),
+        title: Text(
+          "Bulletin",
+          style: 
+          GoogleFonts.lexendTera(
+            color: const Color.fromARGB(252, 255, 255, 255),
+            fontSize: 40,
+            fontWeight: FontWeight.bold,
+            shadows: [
+              const Shadow(
+                offset: Offset(2.0, 2.0), // Position of the shadow
+                blurRadius: 4.0, // Softness of the shadow
+                color: Color.fromARGB(128, 63, 3, 85), // Shadow color with transparency
+              ),
+            ],
+           ),
         ),
         centerTitle: true,
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: const Color.fromARGB(255, 255, 255, 255), // Make the background transparent
+        elevation: 0, // Remove shadow
         actions: [
           IconButton(
-            onPressed: (){
+            onPressed: () {
               loadBulletinData();
-            }, 
+            },
             icon: const Icon(
-              Icons.refresh_outlined, 
-              color: Colors.white,),
-            )
+              Icons.refresh_outlined,
+              color: Colors.white,
+
+            ),
+          ),
         ],
         iconTheme: const IconThemeData(
-          color: Colors.white
+          color: Colors.white,
+          
         ),
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30.0), // Rounded edges at the bottom
+          ),
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/bg/bulletinappbar.png'), // Your image here
+              fit: BoxFit.cover, // Resize image to cover the area
+            ),
+            borderRadius: BorderRadius.all(
+              Radius.circular(30.0), // Same rounded edges as above
+            ),
+          ),
+        ),
+        toolbarHeight: 145, // Resize the AppBar height
       ),
       body: Container(
         decoration: const BoxDecoration(
         gradient: LinearGradient(
-          colors: [ Color.fromARGB(255, 210, 232, 249),  Color.fromARGB(255, 32, 111, 175)],
+          colors: [ 
+            Color.fromARGB(219, 255, 255, 255),
+            Color.fromARGB(219, 214, 178, 241),  
+            Color.fromARGB(255, 80, 17, 148)],
           begin: Alignment.topCenter,
           end: Alignment.bottomCenter,
         ),
@@ -102,9 +137,9 @@ class _MainScreen extends State<MainScreen> {
                   color: Colors.white,
                   elevation: 5,
                   child:ListTile(
-                    leading: CircleAvatar(
-                      backgroundColor: Theme.of(context).primaryColor,
-                      child: const Icon(Icons.newspaper, color: Colors.white),
+                    leading: const CircleAvatar(
+                      backgroundColor:Color.fromARGB(255, 115, 47, 188),
+                      child: Icon(Icons.newspaper, color: Colors.white),
                     ),
                     onLongPress: (){
                       deleteDialog(index);
@@ -174,7 +209,7 @@ class _MainScreen extends State<MainScreen> {
                     ),
                     trailing: IconButton(
                       icon: const Icon(Icons.arrow_forward),
-                      color: Theme.of(context).primaryColor,
+                      color: Color.fromARGB(255, 178, 78, 255),
                       onPressed: (){
                         showBulletinDialog(index);
                       },
@@ -192,7 +227,7 @@ class _MainScreen extends State<MainScreen> {
                   scrollDirection: Axis.horizontal,
                   itemBuilder: (BuildContext context, int index) {
                     if ((currentpage - 1) == index){
-                      color = Theme.of(context).primaryColor;
+                      color = Colors.yellow[500];
                     }else{
                       color = Colors.white;
                     }
@@ -206,16 +241,15 @@ class _MainScreen extends State<MainScreen> {
                         style: TextStyle(color: color, fontSize: 18),
                       ));
                     },
-                  ),)       
+                  ),
+                ),       
               ],
             ),
           ),
-      
-      drawer: const MainScreenDrawer(),
+      drawer: MainScreenDrawer(),
       floatingActionButton: FloatingActionButton(
-        backgroundColor: Theme.of(context).primaryColor,
+        backgroundColor: Color.fromARGB(255, 178, 78, 255),
         onPressed: () async {
-          
           await Navigator.push(//wait for this to happen
           context,
           MaterialPageRoute(
@@ -391,7 +425,7 @@ void markAsViewed(String bulletinId) async {
               child: Text(
                 "Edit",
                  style: TextStyle(
-                  color: Colors.blue[700],
+                  color: Colors.purple[700],
                   fontSize: 16,
                   fontWeight: FontWeight.bold
                  ),)

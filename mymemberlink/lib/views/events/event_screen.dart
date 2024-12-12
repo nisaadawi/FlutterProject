@@ -1,6 +1,4 @@
 import 'dart:convert';
-import 'dart:math';
-
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mymemberlink/models/myevent.dart';
@@ -8,8 +6,10 @@ import 'package:mymemberlink/myconfig.dart';
 import 'package:mymemberlink/views/events/edit_event.dart';
 import 'package:mymemberlink/views/events/new_event.dart';
 import 'package:http/http.dart' as http;
+import 'package:mymemberlink/views/shared/drawer_main_screen.dart';
 
 class EventScreen extends StatefulWidget {
+  
   const EventScreen({super.key});
 
   @override
@@ -103,7 +103,9 @@ class _EventScreenState extends State<EventScreen> {
                           child: Text(
                             eventList[index].eventType.toString(),
                             style: const TextStyle(
-                                fontSize: 18, fontWeight: FontWeight.bold),
+                                fontSize: 18, 
+                                fontWeight: FontWeight.bold,),
+                                textAlign: TextAlign.left,
                           ),
                         ),
                         Text(df.format(DateTime.parse(
@@ -117,7 +119,7 @@ class _EventScreenState extends State<EventScreen> {
           })
         ),
     
-      drawer: const Drawer(),
+      drawer: MainScreenDrawer(),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context, 
@@ -219,32 +221,32 @@ class _EventScreenState extends State<EventScreen> {
       
       void deleteDialog(int index) {
         showDialog(
-      context: context,
-      builder: (context) {
-        return AlertDialog(
-            title: Text(
-              "Delete \"${truncateString(eventList[index].eventTitle.toString(), 20)}\"",
-              style: const TextStyle(fontSize: 18),
-            ),
-            content:
-                const Text("Are you sure you want to delete this event?"),
-            actions: [
-              TextButton(
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-                child: const Text("No"),
-              ),
-              TextButton(
-                onPressed: () {
-                  deleteEvent(index);
-                  Navigator.pop(context);
-                },
-                child: const Text("Yes"),
-              )
-            ]);
-      });
-    }
+          context: context,
+          builder: (context) {
+            return AlertDialog(
+                title: Text(
+                  "Delete \"${truncateString(eventList[index].eventTitle.toString(), 20)}\"",
+                  style: const TextStyle(fontSize: 18),
+                ),
+                content:
+                    const Text("Are you sure you want to delete this event?"),
+                actions: [
+                  TextButton(
+                    onPressed: () {
+                      Navigator.pop(context);
+                    },
+                    child: const Text("No"),
+                  ),
+                  TextButton(
+                    onPressed: () {
+                      deleteEvent(index);
+                      Navigator.pop(context);
+                    },
+                    child: const Text("Yes"),
+                  )
+                ]);
+          });
+        }
     
       void deleteEvent(int index) {
         http.post(

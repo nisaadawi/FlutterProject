@@ -177,7 +177,7 @@ class _ResetPasswordScreen extends State<ResetPasswordScreen> {
         ));
         Navigator.push(
             context,
-            MaterialPageRoute(builder: (content) => const LoginScreen()),
+            MaterialPageRoute(builder: (content) => LoginScreen()),
           );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

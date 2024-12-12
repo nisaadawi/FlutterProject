@@ -1,8 +1,9 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:mymemberlink/views/auth/forgot_password_screen.dart';
-import 'package:mymemberlink/views/bulletin/main_screen.dart';
+import 'package:mymemberlink/views/bulletin/bulletin_screen.dart';
 import 'package:mymemberlink/views/auth/register_screen.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
@@ -29,183 +30,244 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: const Color.fromARGB(255, 236, 234, 234),
-      body: Center(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24.0),
-          child: Card(
-            color: const Color.fromARGB(230, 154, 186, 219),
-            elevation: 8,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(15),
+        appBar: AppBar(
+        title: Text(
+          "MyMemberLink",
+          style: 
+          GoogleFonts.lexendTera(
+            color: const Color.fromARGB(252, 255, 255, 255),
+            fontSize: 30,
+            fontWeight: FontWeight.bold,
+            shadows: [
+              const Shadow(
+                offset: Offset(2.0, 2.0), // Position of the shadow
+                blurRadius: 4.0, // Softness of the shadow
+                color: Color.fromARGB(128, 63, 3, 85), // Shadow color with transparency
+              ),
+            ],
+           ),
+        ),
+        centerTitle: true,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+            bottom: Radius.circular(30.0), // Rounded edges at the bottom
+          ),
+        ),
+        flexibleSpace: Container(
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage('assets/bg/memberlink.png'), // Your image here
+              fit: BoxFit.cover, // Resize image to cover the area
             ),
-            child: Padding(
-              padding: const EdgeInsets.all(24.0),
-              child: Column(
-
-                mainAxisSize: MainAxisSize.min,
-                mainAxisAlignment: MainAxisAlignment.center,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Image.asset(
-                  'assets/images/login.png',
-                  height: 120, // adjust height as needed
-                  fit: BoxFit.contain,
-                ),
-                  Text(
-                    "Welcome Back",
-                    style: TextStyle(
-                      fontSize: 30,
-                      fontWeight: FontWeight.bold,
-                      color: Colors.blue[900],
+            borderRadius: BorderRadius.all(
+              Radius.circular(30.0), // Same rounded edges as above
+            ),
+          ),
+        ),
+        toolbarHeight: 145,
+        automaticallyImplyLeading: false
+      ),
+      backgroundColor: const Color.fromARGB(255, 236, 234, 234),
+      body: Container(
+        decoration: const BoxDecoration(
+          gradient: LinearGradient(
+            colors: [
+              Color.fromARGB(219, 255, 255, 255),
+              Color.fromARGB(219, 214, 178, 241),
+              Color.fromARGB(255, 80, 17, 148)
+            ],
+            begin: Alignment.topCenter,
+            end: Alignment.bottomCenter,
+          ),
+        ),
+        child: Center(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 20.0),
+            child: Card(
+              color: Colors.white, // Changed card color to white
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(15),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Image.asset(
+                      'assets/images/team.png',
+                      height: 120, // adjust height as needed
+                      fit: BoxFit.contain,
                     ),
-                    textAlign: TextAlign.center,
-                  ),
-                  const SizedBox(height: 40),
-                  TextFormField(
-                    controller: emailController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.email_outlined, color: Colors.blue[800]),
-                      hintText: "Email",
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
-                    ),
-                    validator: (val) =>
-                        val!.isEmpty || !val.contains("@") || !val.contains(".")
-                            ? "Enter a valid email"
-                            : null,
-                  ),
-                  const SizedBox(height: 16),
-                  TextFormField(
-                    controller: passwordController,
-                    obscureText: !_isPasswordVisible,
-                    decoration: InputDecoration(
-                      prefixIcon: Icon(Icons.lock_outline, color: Colors.blue[800]),
-                      suffixIcon: IconButton(
-                        icon: Icon(
-                          _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
-                          color: const Color.fromARGB(255, 92, 92, 92),
+                    Text(
+                      "Welcome Back",
+                      style: GoogleFonts.montserrat(
+                        fontSize: 30,
+                        fontWeight: FontWeight.bold,
+                        color: Color.fromARGB(255, 127, 0, 200),
+                        shadows: [
+                          const Shadow(
+                            offset: Offset(2.0, 2.0), // Position of the shadow
+                            blurRadius: 4.0, // Softness of the shadow
+                            color: Color.fromARGB(255, 214, 149, 237), // Shadow color with transparency
+                          ),
+                        ],
                         ),
-                        onPressed: () {
-                          setState(() {
-                            _isPasswordVisible = !_isPasswordVisible;
-                          });
-                        },
-                      ),
-                      hintText: "Password",
-                      filled: true,
-                      fillColor: Colors.white,
-                      contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(10),
-                        borderSide: BorderSide.none,
-                      ),
+                        textAlign: TextAlign.center,
+                        
+                        
                     ),
-                    validator: (val) => validatePassword(val.toString()),
-                  ),
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Checkbox(
-                        activeColor: Colors.blue[800],
-                        value: rememberMe,
-                        onChanged: (bool? value) {
-                          setState(() {
-                            String email = emailController.text;
-                            String pass = passwordController.text;
-                            if (value!) {
-                              if (email.isNotEmpty && pass.isNotEmpty) {
-                                storeSharedPrefs(value, email, pass);
+                    
+                    const SizedBox(height: 10),
+                    TextFormField(
+                      controller: emailController,
+                      keyboardType: TextInputType.emailAddress,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.email_outlined, color: Colors.white),
+                        hintText: "Email",
+                        filled: true,
+                        fillColor:Color.fromARGB(219, 183, 120, 255), // Purple background for TextField
+                        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintStyle: TextStyle(color: Colors.white), // White text in hint
+                      ),
+                      validator: (val) =>
+                          val!.isEmpty || !val.contains("@") || !val.contains(".")
+                              ? "Enter a valid email"
+                              : null,
+                    ),
+                    const SizedBox(height: 16),
+                    TextFormField(
+                      controller: passwordController,
+                      obscureText: !_isPasswordVisible,
+                      decoration: InputDecoration(
+                        prefixIcon: Icon(Icons.lock_outline, color: Colors.white),
+                        suffixIcon: IconButton(
+                          icon: Icon(
+                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            color: const Color.fromARGB(255, 92, 92, 92),
+                          ),
+                          onPressed: () {
+                            setState(() {
+                              _isPasswordVisible = !_isPasswordVisible;
+                            });
+                          },
+                        ),
+                        hintText: "Password",
+                        filled: true,
+                        fillColor: Color.fromARGB(219, 183, 120, 255), // Purple background for TextField
+                        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(10),
+                          borderSide: BorderSide.none,
+                        ),
+                        hintStyle: TextStyle(color: Colors.white), // White text in hint
+                      ),
+                      validator: (val) => validatePassword(val.toString()),
+                    ),
+                    const SizedBox(height: 2),
+                    Row(
+                      children: [
+                        Checkbox(
+                          activeColor: Color.fromARGB(219, 183, 120, 255),
+                          value: rememberMe,
+                          onChanged: (bool? value) {
+                            setState(() {
+                              String email = emailController.text;
+                              String pass = passwordController.text;
+                              if (value!) {
+                                if (email.isNotEmpty && pass.isNotEmpty) {
+                                  storeSharedPrefs(value, email, pass);
+                                } else {
+                                  rememberMe = false;
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text("Please enter your credentials"),
+                                      backgroundColor: Colors.red,
+                                    ),
+                                  );
+                                  return;
+                                }
                               } else {
-                                rememberMe = false;
-                                ScaffoldMessenger.of(context).showSnackBar(
-                                  const SnackBar(
-                                    content: Text("Please enter your credentials"),
-                                    backgroundColor: Colors.red,
-                                  ),
-                                );
-                                return;
+                                email = "";
+                                pass = "";
+                                storeSharedPrefs(value, email, pass);
                               }
-                            } else {
-                              email = "";
-                              pass = "";
-                              storeSharedPrefs(value, email, pass);
-                            }
-                            rememberMe = value;
-                          });
-                        },
-                      ),
-                      const Text("Remember me"),
-                    ],
-                  ),
-                  const SizedBox(height: 20),
-                  ElevatedButton(
-                    onPressed: onLogin,
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blue[800],
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(10),
-                      ),
-                      padding: const EdgeInsets.symmetric(vertical: 16),
-                      elevation: 5,
+                              rememberMe = value;
+                            });
+                          },
+                        ),
+                        const Text("Remember me", style: TextStyle(color: Color.fromARGB(255, 80, 17, 148))), // White text
+                      ],
                     ),
-                    child: const Text(
-                      "Login",
-                      style: TextStyle(fontSize: 18, color: Colors.white),
+                    const SizedBox(height: 20),
+                    ElevatedButton(
+                      onPressed: onLogin,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Color.fromARGB(219, 183, 120, 255), // Purple color for the button
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        elevation: 5,
+                      ),
+                      child: const Text(
+                        "Login",
+                        style: TextStyle(fontSize: 18, color: Colors.white),
+                      ),
                     ),
-                  ),
-                  const SizedBox(height: 10),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (content) => const ForgotPasswordScreen()),
-                      );
-                    },
-                    child: const Center(
-                      child: Text(
-                        "Forgot Password?",
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 7, 31, 58),
-                          fontSize:16,
-                          decoration: TextDecoration.underline,
+                    const SizedBox(height: 10),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (content) => ForgotPasswordScreen()),
+                        );
+                      },
+                      child: const Center(
+                        child: Text(
+                          "Forgot Password?",
+                          style: TextStyle(
+                            color:Color.fromARGB(255, 80, 17, 148), // White color for the text
+                            fontSize: 14,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 12),
-                  GestureDetector(
-                    onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(builder: (content) => const RegisterScreen()),
-                      );
-                    },
-                    child: const Center(
-                      child: Text(
-                        "Don't have an account? Register here",
-                        style: TextStyle(
-                          color: Color.fromARGB(255, 7, 31, 58),
-                          fontSize: 16,
-                          decoration: TextDecoration.underline,
+                    const SizedBox(height: 12),
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (content) => const RegisterScreen()),
+                        );
+                      },
+                      child: const Center(
+                        child: Text(
+                          "Don't have an account? Register here",
+                          style: TextStyle(
+                            color: Color.fromARGB(255, 80, 17, 148), // White color for the text
+                            fontSize: 14,
+                            decoration: TextDecoration.underline,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                ],
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
     );
+
   }
 
   String? validatePassword(String value) {
@@ -244,7 +306,7 @@ class _LoginScreenState extends State<LoginScreen> {
           ));
           Navigator.push(
             context,
-            MaterialPageRoute(builder: (content) => const MainScreen()),
+            MaterialPageRoute(builder: (content) => BulletinScreen()),
           );
         } else {
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(

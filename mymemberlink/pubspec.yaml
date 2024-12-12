@@ -32,8 +32,13 @@ dev_dependencies:
 flutter:
   uses-material-design: true
   assets:
-      - assets/images/login.png
+      - assets/images/team.png
       - assets/images/camera.png
+      - assets/bg/mainscreenbg.png
+      - assets/bg/memberlink.png
+      - assets/bg/cart.png
+      - assets/bg/bulletinappbar.png
+      - assets/bg/productappbar.png
       - assets/images/na.png
       - assets/gif/dribbble-success-2.gif
       - assets/gif/trash-bin.gif

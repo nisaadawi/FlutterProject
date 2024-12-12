@@ -16,6 +16,8 @@ void main() {
 
 class MainApp extends StatelessWidget {
   const MainApp({super.key});
+  
+  get admin => null;
 
   @override
   Widget build(BuildContext context) {
@@ -25,17 +27,17 @@ class MainApp extends StatelessWidget {
         useMaterial3: true,
         colorScheme: ColorScheme.fromSeed(
           seedColor:
-              const Color.fromARGB(228, 19, 46, 126), 
+              const Color.fromARGB(255, 80, 17, 148), 
           brightness: Brightness.light,
         ).copyWith(
-          primary: const  Color.fromARGB(228, 19, 46, 126),
+          primary: const Color.fromARGB(255, 80, 17, 148),
           onPrimary: Colors.white,
-          primaryContainer: const Color(0xFF4D73FF), // A lighter shade of primary for containers
-          secondary: Colors.blue[800]!, // Use a complementary blue as secondary
+          primaryContainer:const Color.fromARGB(255, 106, 60, 186), 
+          secondary: Color.fromARGB(255, 127, 0, 200)!, 
           onSecondary: Colors.white,
           background: Colors.white,
           onBackground: Colors.black87,
-          surface: Colors.blue[50]!,
+          surface: const Color.fromARGB(255, 254, 254, 254)!,
           onSurface: Colors.black87,
           error: Colors.redAccent,
           onError: Colors.white,
@@ -52,7 +54,7 @@ class MainApp extends StatelessWidget {
           onPrimary: Color.fromARGB(228, 19, 46, 126),
           primaryContainer:
               const Color.fromARGB(228, 19, 46, 126), // Darker primary container color
-          secondary: Colors.blue[200]!,
+          secondary:const Color.fromARGB(219, 214, 178, 241)!,
           onSecondary: Colors.black87,
           background: Colors.black87,
           onBackground: Colors.white,
@@ -62,7 +64,7 @@ class MainApp extends StatelessWidget {
           onError: Colors.black87,
         ),
       ),
-      home: const SplashScreen(),
+      home:  SplashScreen(),
     );
   }
 }

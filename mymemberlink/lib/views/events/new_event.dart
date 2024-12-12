@@ -317,7 +317,7 @@ class _NewEventScreenState extends State<NewEventScreen> {
           ),
         );
       });
-  }
+   }
   
   Future<void> _selectfromGallery() async {
     final picker = ImagePicker();
@@ -372,13 +372,13 @@ class _NewEventScreenState extends State<NewEventScreen> {
           title: 'Cropper',
         ),
       ]
-      );
-      if (croppedFile != null){
-        File imageFile = File(croppedFile.path);
+    );
+    if (croppedFile != null){
+      File imageFile = File(croppedFile.path);
       _image = imageFile;
       print(getFileSize(_image!));
       setState(() {});
-      }
+    }
   }
   
   double getFileSize(File file) {
@@ -411,51 +411,51 @@ class _NewEventScreenState extends State<NewEventScreen> {
   }
   
   void insertEvent() {
-    String title = titleController.text;
-    String location = locationController.text;
-    String description = descriptionController.text;
-    String start = selectedStartDateTime.toString();
-    String end = selectedEndDateTime.toString();
-    String image = base64Encode(_image!.readAsBytesSync());
-    
-   http.post(
-        Uri.parse("${MyConfig.servername}/memberlink/api/insert_event.php"),
-        body: {
-          "title": title,
-          "location": location,
-          "description": description,
-          "eventtype": eventtypevalue,
-          "start": start,
-          "end": end,
-          "image": image
-        }).then((response) {
-      if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        // log(response.body);
-        if (data['status'] == "success") {
-          Navigator.pop(context);
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Insert Success"),
-            backgroundColor: Colors.green,
-          ));
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Insert Failed"),
+          String title = titleController.text;
+          String location = locationController.text;
+          String description = descriptionController.text;
+          String start = selectedStartDateTime.toString();
+          String end = selectedEndDateTime.toString();
+          String image = base64Encode(_image!.readAsBytesSync());
+          
+        http.post(
+              Uri.parse("${MyConfig.servername}/memberlink/api/insert_event.php"),
+              body: {
+                "title": title,
+                "location": location,
+                "description": description,
+                "eventtype": eventtypevalue,
+                "start": start,
+                "end": end,
+                "image": image
+              }).then((response) {
+            if (response.statusCode == 200) {
+              var data = jsonDecode(response.body);
+              // log(response.body);
+              if (data['status'] == "success") {
+                Navigator.pop(context);
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Insert Success"),
+                  backgroundColor: Colors.green,
+                ));
+              } else {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Insert Failed"),
+                  backgroundColor: Colors.red,
+                ));
+              }
+            }else {
+            ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+              content: Text("Server Error: ${response.statusCode}"),
+              backgroundColor: Colors.red,
+            ));
+          }
+        }).catchError((error) {
+          print("Error: $error");
+          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+            content: Text("Error: $error"),
             backgroundColor: Colors.red,
           ));
-        }
-      }else {
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-        content: Text("Server Error: ${response.statusCode}"),
-        backgroundColor: Colors.red,
-      ));
-    }
-  }).catchError((error) {
-    print("Error: $error");
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(
-      content: Text("Error: $error"),
-      backgroundColor: Colors.red,
-    ));
-  });
-}
+        });
+      }
     }
