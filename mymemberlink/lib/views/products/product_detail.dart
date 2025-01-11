@@ -10,7 +10,6 @@ import 'package:mymemberlink/views/products/product_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
   final MyProduct myproduct;
-
   const ProductDetailScreen({super.key, required this.myproduct});
 
   @override
@@ -123,7 +122,7 @@ class _ProductDetailScreen extends State<ProductDetailScreen> {
                     // Product Details
                     Text(
                       "${widget.myproduct.productName}",
-                      style: GoogleFonts.montserrat(fontSize: 40,
+                      style: GoogleFonts.montserrat(fontSize: 30,
                         fontWeight: FontWeight.bold,
                         color: Color.fromARGB(255, 127, 0, 200)), 
                     ),
@@ -139,7 +138,7 @@ class _ProductDetailScreen extends State<ProductDetailScreen> {
                       alignment: Alignment.centerRight,
                       child: Text(
                         "RM ${widget.myproduct.productPrice}",
-                        style: GoogleFonts.montserrat(fontSize: 35,
+                        style: GoogleFonts.montserrat(fontSize: 33,
                         fontWeight: FontWeight.bold,
                         color: Color.fromARGB(255, 127, 0, 200)),
                       ),

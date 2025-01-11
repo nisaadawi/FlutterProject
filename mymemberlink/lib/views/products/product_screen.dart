@@ -50,7 +50,7 @@ class _ProductScreenState extends State<ProductScreen> {
     }
 
     return Scaffold(
-      drawer: MainScreenDrawer(),
+      drawer: const MainScreenDrawer(),
       appBar: AppBar(
         title: Text(
           "Products",
@@ -165,8 +165,10 @@ class _ProductScreenState extends State<ProductScreen> {
                   ? Center(
                       child: Text(
                         "No Data..",
-                        style: TextStyle(
-                          color: Colors.grey[400],
+                        style: GoogleFonts.montserrat(
+                        fontSize: 30,
+                          fontWeight: FontWeight.bold,
+                          color: Color.fromARGB(255, 127, 0, 200),
                         ),
                       ),
                     )
@@ -330,27 +332,26 @@ class _ProductScreenState extends State<ProductScreen> {
         ),
       ),
     );
-
-                }
+}
     
-      void loadProductData() {
-        http
-          .get(Uri.parse("${MyConfig.servername}/memberlink/api/load_product.php?pageno=$currentpage"))
-          .then((response) {
-        if (response.statusCode == 200) {
-          var data = jsonDecode(response.body);
-          if (data['status'] == "success") {
-            var result = data['data']['products'];
+    void loadProductData() {
+      http
+        .get(Uri.parse("${MyConfig.servername}/memberlink/api/load_product.php?pageno=$currentpage"))
+        .then((response) {
+      if (response.statusCode == 200) {
+        var data = jsonDecode(response.body);
+        if (data['status'] == "success") {
+          var result = data['data']['products'];
 
-            productList.clear();
+          productList.clear();
 
-            for (var item in result) {
-              MyProduct myProduct = MyProduct.fromJson(item);
-              productList.add(myProduct);
-            }
-            numofpage = int.parse(data['numofpage'].toString());
-            numofresult = int.parse(data['numberofresult'].toString());
-            
+          for (var item in result) {
+            MyProduct myProduct = MyProduct.fromJson(item);
+            productList.add(myProduct);
+          }
+          numofpage = int.parse(data['numofpage'].toString());
+          numofresult = int.parse(data['numberofresult'].toString());
+          
             setState(() {});
           } else {
             status = "No Data";

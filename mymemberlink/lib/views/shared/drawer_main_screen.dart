@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mymemberlink/views/memberships/membership_screen.dart';
+import 'package:mymemberlink/views/memberships/memberships_screen.dart';
 import 'package:mymemberlink/views/bulletin/bulletin_screen.dart';
 import 'package:mymemberlink/views/events/event_screen.dart';
 import 'package:mymemberlink/views/products/product_screen.dart';
@@ -67,8 +69,11 @@ class MainScreenDrawer extends StatelessWidget {
                 fontWeight: FontWeight.bold,
                 color: Colors.white, // White color for text
               ),
+            ),onTap:() {
+              Navigator.push(context, 
+                        MaterialPageRoute(builder: (content)=> const MembershipScreen()));
+            }
             ),
-          ),
           ListTile(
             leading: const Icon(Icons.payment, color: Colors.white), // Payment icon
             title: Text(

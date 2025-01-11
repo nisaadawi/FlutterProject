@@ -1,12 +1,17 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:geolocator/geolocator.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_cropper/image_cropper.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:mymemberlink/myconfig.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 class NewEventScreen extends StatefulWidget {
   const NewEventScreen({super.key});
@@ -179,8 +184,14 @@ class _NewEventScreenState extends State<NewEventScreen> {
                   validator: (value) =>
                             value!.isEmpty ? "Enter Location" : null,
                         controller: locationController,
-                  decoration: const InputDecoration(
-                    border: OutlineInputBorder(
+                  decoration: InputDecoration(
+                    suffixIcon: IconButton(
+                      onPressed: (){
+                        getPositionDialog();
+                      },
+                      icon: const Icon(Icons.location_on),
+                    ),
+                    border: const OutlineInputBorder(
                       borderRadius: BorderRadius.all(Radius.circular(10)),
                     ),
                     hintText: "Event Location"
@@ -458,4 +469,141 @@ class _NewEventScreenState extends State<NewEventScreen> {
           ));
         });
       }
+      
+        void getPositionDialog() {
+          showDialog(
+            context: context, 
+            builder: (BuildContext context){
+              return AlertDialog(
+                title: const Text(
+                  "Get Location From",
+                  style: TextStyle(
+                    fontSize: 12,
+                  ),
+                ),
+                content: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceAround,
+                  children: [
+                    IconButton(
+                      onPressed: (){
+                        Navigator.of(context).pop();
+                        determinePosition();
+                      }, 
+                      icon: const Icon(
+                        Icons.location_on,
+                        size: 68,
+                      )),
+                      IconButton(
+                        onPressed: (){
+                          Navigator.of(context).pop();
+                          _selectFromMap();
+                        }, 
+                        icon: const Icon(
+                          Icons.map,
+                          size: 68,
+                        )),
+                      ],
+                    ),
+                  );
+                });
+            }
+        
+          Future<void> determinePosition() async {
+            bool serviceEnabled;
+            LocationPermission permission;
+
+            serviceEnabled = await Geolocator.isLocationServiceEnabled();
+            if (!serviceEnabled){
+              return Future.error('Location service are enabled');
+            }
+            permission = await Geolocator.checkPermission();
+            if(permission == LocationPermission.denied){
+              permission = await Geolocator.requestPermission();
+                if(permission == LocationPermission.denied){
+                  return Future.error("Location are denied");
+                }
+              }
+
+            if (permission == LocationPermission.deniedForever){
+              return Future.error(
+                'Location permission are permenantly denied, we cannot request permission.'
+              );
+            }
+               Position position = await Geolocator.getCurrentPosition();
+              List<Placemark> placemarks =
+                  await placemarkFromCoordinates(position.latitude, position.longitude);
+              if (placemarks.isEmpty) {
+                ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                  content: Text("Location not found"),
+                  backgroundColor: Colors.red,
+                ));
+                return;
+              }
+              String address = "${placemarks[0].name}, ${placemarks[0].country}";
+              print(address);
+              locationController.text = address;
+              setState(() {
+                print(position.latitude);
+                print(position.longitude);
+              });
+          }
+
+          Future<void> _selectFromMap() async{
+            bool serviceEnabled;
+            LocationPermission permission;
+            serviceEnabled = await Geolocator.isLocationServiceEnabled();
+            if (!serviceEnabled) {
+              return Future.error('Location services are disabled.');
+            }
+            permission = await Geolocator.checkPermission();
+            if (permission == LocationPermission.denied) {
+              permission = await Geolocator.requestPermission();
+              if (permission == LocationPermission.denied) {
+                return Future.error('Location permissions are denied');
+              }
+            }
+            if (permission == LocationPermission.deniedForever) {
+              return Future.error(
+                  'Location permissions are permanently denied, we cannot request permissions.');
+            }
+            Position position = await Geolocator.getCurrentPosition();
+            if (position == null) {
+              ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+                content: Text("Location not found"),
+                backgroundColor: Colors.red,
+              ));
+              return;
+              }
+
+              final Completer<GoogleMapController> mapcontroller =
+              Completer<GoogleMapController>();
+              
+              CameraPosition defaultLocation = CameraPosition(
+                target: LatLng(
+                  position.latitude,
+                  position.longitude,
+                ),
+                zoom: 14.4746,
+              );
+
+              showDialog(
+                context: context, 
+                builder: (context){
+                  return AlertDialog(
+                    title: const Text("Select Location"),
+                    content: SizedBox(
+                      height: screenHeight,
+                      width: screenWidth,
+                      child: GoogleMap(
+                        initialCameraPosition: defaultLocation,
+                        onMapCreated: (controller) =>
+                        mapcontroller.complete(controller),
+                        myLocationEnabled: true,
+                        myLocationButtonEnabled: true,
+                        compassEnabled: true
+                        ),
+                    ),
+                  );
+                });
+          } 
     }
