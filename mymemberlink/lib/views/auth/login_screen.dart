@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:mymemberlink/views/auth/forgot_password_screen.dart';
 import 'package:mymemberlink/views/bulletin/bulletin_screen.dart';
@@ -9,13 +10,15 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:http/http.dart' as http;
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({super.key});
+  final Admin admin;
+  const LoginScreen({super.key, required this.admin});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
 }
 
 class _LoginScreenState extends State<LoginScreen> {
+  List<Admin> adminList = [];
   TextEditingController emailController = TextEditingController();
   TextEditingController passwordController = TextEditingController();
   bool rememberMe = false;
@@ -30,43 +33,43 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-        title: Text(
-          "MyMemberLink",
-          style: 
-          GoogleFonts.lexendTera(
-            color: const Color.fromARGB(252, 255, 255, 255),
-            fontSize: 30,
-            fontWeight: FontWeight.bold,
-            shadows: [
-              const Shadow(
-                offset: Offset(2.0, 2.0), // Position of the shadow
-                blurRadius: 4.0, // Softness of the shadow
-                color: Color.fromARGB(128, 63, 3, 85), // Shadow color with transparency
+      appBar: AppBar(
+          title: Text(
+            "MyMemberLink",
+            style: GoogleFonts.lexendTera(
+              color: const Color.fromARGB(252, 255, 255, 255),
+              fontSize: 30,
+              fontWeight: FontWeight.bold,
+              shadows: [
+                const Shadow(
+                  offset: Offset(2.0, 2.0), // Position of the shadow
+                  blurRadius: 4.0, // Softness of the shadow
+                  color: Color.fromARGB(
+                      128, 63, 3, 85), // Shadow color with transparency
+                ),
+              ],
+            ),
+          ),
+          centerTitle: true,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.vertical(
+              bottom: Radius.circular(30.0), // Rounded edges at the bottom
+            ),
+          ),
+          flexibleSpace: Container(
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image:
+                    AssetImage('assets/bg/memberlink.png'), // Your image here
+                fit: BoxFit.cover, // Resize image to cover the area
               ),
-            ],
-           ),
-        ),
-        centerTitle: true,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-            bottom: Radius.circular(30.0), // Rounded edges at the bottom
-          ),
-        ),
-        flexibleSpace: Container(
-          decoration: const BoxDecoration(
-            image: DecorationImage(
-              image: AssetImage('assets/bg/memberlink.png'), // Your image here
-              fit: BoxFit.cover, // Resize image to cover the area
-            ),
-            borderRadius: BorderRadius.all(
-              Radius.circular(30.0), // Same rounded edges as above
+              borderRadius: BorderRadius.all(
+                Radius.circular(30.0), // Same rounded edges as above
+              ),
             ),
           ),
-        ),
-        toolbarHeight: 145,
-        automaticallyImplyLeading: false
-      ),
+          toolbarHeight: 145,
+          automaticallyImplyLeading: false),
       backgroundColor: const Color.fromARGB(255, 236, 234, 234),
       body: Container(
         decoration: const BoxDecoration(
@@ -111,45 +114,51 @@ class _LoginScreenState extends State<LoginScreen> {
                           const Shadow(
                             offset: Offset(2.0, 2.0), // Position of the shadow
                             blurRadius: 4.0, // Softness of the shadow
-                            color: Color.fromARGB(255, 214, 149, 237), // Shadow color with transparency
+                            color: Color.fromARGB(255, 214, 149,
+                                237), // Shadow color with transparency
                           ),
                         ],
-                        ),
-                        textAlign: TextAlign.center,
-                        
-                        
+                      ),
+                      textAlign: TextAlign.center,
                     ),
-                    
                     const SizedBox(height: 10),
                     TextFormField(
                       controller: emailController,
                       keyboardType: TextInputType.emailAddress,
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.email_outlined, color: Colors.white),
+                        prefixIcon:
+                            Icon(Icons.email_outlined, color: Colors.white),
                         hintText: "Email",
                         filled: true,
-                        fillColor:Color.fromARGB(219, 183, 120, 255), // Purple background for TextField
-                        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+                        fillColor: Color.fromARGB(219, 183, 120,
+                            255), // Purple background for TextField
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 18, horizontal: 12),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
-                        hintStyle: TextStyle(color: Colors.white), // White text in hint
+                        hintStyle: TextStyle(
+                            color: Colors.white), // White text in hint
                       ),
-                      validator: (val) =>
-                          val!.isEmpty || !val.contains("@") || !val.contains(".")
-                              ? "Enter a valid email"
-                              : null,
+                      validator: (val) => val!.isEmpty ||
+                              !val.contains("@") ||
+                              !val.contains(".")
+                          ? "Enter a valid email"
+                          : null,
                     ),
                     const SizedBox(height: 16),
                     TextFormField(
                       controller: passwordController,
                       obscureText: !_isPasswordVisible,
                       decoration: InputDecoration(
-                        prefixIcon: Icon(Icons.lock_outline, color: Colors.white),
+                        prefixIcon:
+                            Icon(Icons.lock_outline, color: Colors.white),
                         suffixIcon: IconButton(
                           icon: Icon(
-                            _isPasswordVisible ? Icons.visibility : Icons.visibility_off,
+                            _isPasswordVisible
+                                ? Icons.visibility
+                                : Icons.visibility_off,
                             color: const Color.fromARGB(255, 92, 92, 92),
                           ),
                           onPressed: () {
@@ -160,13 +169,16 @@ class _LoginScreenState extends State<LoginScreen> {
                         ),
                         hintText: "Password",
                         filled: true,
-                        fillColor: Color.fromARGB(219, 183, 120, 255), // Purple background for TextField
-                        contentPadding: const EdgeInsets.symmetric(vertical: 18, horizontal: 12),
+                        fillColor: Color.fromARGB(219, 183, 120,
+                            255), // Purple background for TextField
+                        contentPadding: const EdgeInsets.symmetric(
+                            vertical: 18, horizontal: 12),
                         border: OutlineInputBorder(
                           borderRadius: BorderRadius.circular(10),
                           borderSide: BorderSide.none,
                         ),
-                        hintStyle: TextStyle(color: Colors.white), // White text in hint
+                        hintStyle: TextStyle(
+                            color: Colors.white), // White text in hint
                       ),
                       validator: (val) => validatePassword(val.toString()),
                     ),
@@ -187,7 +199,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                   rememberMe = false;
                                   ScaffoldMessenger.of(context).showSnackBar(
                                     const SnackBar(
-                                      content: Text("Please enter your credentials"),
+                                      content:
+                                          Text("Please enter your credentials"),
                                       backgroundColor: Colors.red,
                                     ),
                                   );
@@ -202,14 +215,18 @@ class _LoginScreenState extends State<LoginScreen> {
                             });
                           },
                         ),
-                        const Text("Remember me", style: TextStyle(color: Color.fromARGB(255, 80, 17, 148))), // White text
+                        const Text("Remember me",
+                            style: TextStyle(
+                                color: Color.fromARGB(
+                                    255, 80, 17, 148))), // White text
                       ],
                     ),
                     const SizedBox(height: 20),
                     ElevatedButton(
                       onPressed: onLogin,
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: Color.fromARGB(219, 183, 120, 255), // Purple color for the button
+                        backgroundColor: Color.fromARGB(
+                            219, 183, 120, 255), // Purple color for the button
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(10),
                         ),
@@ -226,14 +243,17 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (content) => ForgotPasswordScreen()),
+                          MaterialPageRoute(
+                              builder: (content) =>
+                                  ForgotPasswordScreen(admin: widget.admin)),
                         );
                       },
                       child: const Center(
                         child: Text(
                           "Forgot Password?",
                           style: TextStyle(
-                            color:Color.fromARGB(255, 80, 17, 148), // White color for the text
+                            color: Color.fromARGB(
+                                255, 80, 17, 148), // White color for the text
                             fontSize: 14,
                             decoration: TextDecoration.underline,
                           ),
@@ -245,14 +265,16 @@ class _LoginScreenState extends State<LoginScreen> {
                       onTap: () {
                         Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (content) => const RegisterScreen()),
+                          MaterialPageRoute(
+                              builder: (content) => const RegisterScreen()),
                         );
                       },
                       child: const Center(
                         child: Text(
                           "Don't have an account? Register here",
                           style: TextStyle(
-                            color: Color.fromARGB(255, 80, 17, 148), // White color for the text
+                            color: Color.fromARGB(
+                                255, 80, 17, 148), // White color for the text
                             fontSize: 14,
                             decoration: TextDecoration.underline,
                           ),
@@ -267,7 +289,6 @@ class _LoginScreenState extends State<LoginScreen> {
         ),
       ),
     );
-
   }
 
   String? validatePassword(String value) {
@@ -287,34 +308,70 @@ class _LoginScreenState extends State<LoginScreen> {
   void onLogin() {
     String email = emailController.text;
     String password = passwordController.text;
+
+    print("Attempting login with email: $email"); // Debug print
+
     if (email.isEmpty || password.isEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
         content: Text("Please enter email and password"),
       ));
       return;
     }
+
     http.post(
       Uri.parse("${MyConfig.servername}/memberlink/api/user_login.php"),
       body: {"email": email, "password": password},
     ).then((response) {
       if (response.statusCode == 200) {
-        var data = jsonDecode(response.body);
-        if (data['status'] == "success") {
-          ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Login Success"),
-            backgroundColor: Colors.green,
-          ));
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (content) => BulletinScreen()),
-          );
+        final jsonResponse = jsonDecode(response.body);
+        if (jsonResponse['status'] == 'success') {
+          try {
+            final adminData = jsonResponse['data']['admin'][0];
+            Admin admin = Admin.fromJson(adminData);
+            
+            print("Login successful for: ${admin.adminemail}"); // Debug print
+            
+            if (admin.adminemail != email) {
+              print("Warning: Returned email doesn't match input email"); // Safety check
+            }
+
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Login Success"),
+              backgroundColor: Colors.green,
+            ));
+
+            Navigator.pushReplacement(
+              context,
+              MaterialPageRoute(
+                builder: (content) => BulletinScreen(admin: admin),
+              ),
+            );
+          } catch (e) {
+            print("Error parsing admin data: $e");
+            ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+              content: Text("Error processing login data"),
+              backgroundColor: Colors.red,
+            ));
+          }
         } else {
+          print("Login failed for email: $email"); // Debug print
           ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
-            content: Text("Login Failed"),
+            content: Text("Invalid email or password"),
             backgroundColor: Colors.red,
           ));
         }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+          content: Text("Server error occurred"),
+          backgroundColor: Colors.red,
+        ));
       }
+    }).catchError((error) {
+      print("Login error: $error");
+      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
+        content: Text("Failed to connect to server"),
+        backgroundColor: Colors.red,
+      ));
     });
   }
 

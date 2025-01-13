@@ -1,5 +1,6 @@
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/views/splash_screen.dart';
 
 void main() {
@@ -11,13 +12,14 @@ void main() {
     emailTheme: EmailTheme.v2,
     otpLength: 4,
   );
-  runApp(const MainApp());
+  runApp(MainApp(admin: Admin())); // Replace Admin() with a valid Admin object
 }
 
 class MainApp extends StatelessWidget {
-  const MainApp({super.key});
+  final Admin admin;
+   const MainApp({super.key, required this.admin});
   
-  get admin => null;
+  
 
   @override
   Widget build(BuildContext context) {
@@ -64,7 +66,7 @@ class MainApp extends StatelessWidget {
           onError: Colors.black87,
         ),
       ),
-      home:  SplashScreen(),
+      home:  SplashScreen(admin: admin),
     );
   }
 }

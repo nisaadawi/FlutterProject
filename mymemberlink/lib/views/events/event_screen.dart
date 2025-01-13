@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/models/myevent.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:mymemberlink/views/events/edit_event.dart';
@@ -9,8 +10,9 @@ import 'package:http/http.dart' as http;
 import 'package:mymemberlink/views/shared/drawer_main_screen.dart';
 
 class EventScreen extends StatefulWidget {
+  final Admin admin;
   
-  const EventScreen({super.key});
+  const EventScreen({super.key, required this.admin});
 
   @override
   State<EventScreen> createState() => _EventScreenState();
@@ -119,7 +121,7 @@ class _EventScreenState extends State<EventScreen> {
           })
         ),
     
-      drawer: MainScreenDrawer(),
+      drawer: MainScreenDrawer(admin: widget.admin),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           await Navigator.push(context, 

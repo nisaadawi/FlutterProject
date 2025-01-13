@@ -3,6 +3,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/models/myproduct.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:mymemberlink/views/cart/cart_screen.dart';
@@ -12,8 +13,9 @@ import 'package:mymemberlink/views/shared/drawer_main_screen.dart';
 import 'package:http/http.dart' as http;
 
 class ProductScreen extends StatefulWidget {
+  final Admin admin;
   
-  const ProductScreen({super.key});
+  const ProductScreen({super.key, required this.admin});
 
   @override
   State<ProductScreen> createState() => _ProductScreenState();
@@ -50,7 +52,7 @@ class _ProductScreenState extends State<ProductScreen> {
     }
 
     return Scaffold(
-      drawer: const MainScreenDrawer(),
+      drawer: MainScreenDrawer(admin: widget.admin),
       appBar: AppBar(
         title: Text(
           "Products",
@@ -189,7 +191,7 @@ class _ProductScreenState extends State<ProductScreen> {
                                 context,
                                 MaterialPageRoute(
                                   builder: (content) =>
-                                      ProductDetailScreen(myproduct: myProduct),
+                                      ProductDetailScreen(myproduct: myProduct, admin: widget.admin),
                                 ),
                               );
                             },

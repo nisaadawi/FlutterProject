@@ -1,13 +1,15 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:http/http.dart' as http;
 import 'package:mymemberlink/views/auth/login_screen.dart';
 
 class ResetPasswordScreen extends StatefulWidget {
   final String email;
-  const ResetPasswordScreen({super.key, required this.email});
+  Admin admin;
+  ResetPasswordScreen({super.key, required this.email, required this.admin});
 
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreen();
@@ -177,7 +179,7 @@ class _ResetPasswordScreen extends State<ResetPasswordScreen> {
         ));
         Navigator.push(
             context,
-            MaterialPageRoute(builder: (content) => LoginScreen()),
+            MaterialPageRoute(builder: (content) => LoginScreen(admin: widget.admin)),
           );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(SnackBar(

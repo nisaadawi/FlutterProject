@@ -1,11 +1,13 @@
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/views/auth/reset_password_screen.dart';
 import 'package:pinput/pinput.dart';
 
 class VerificationScreen extends StatefulWidget {
   final String email;
-  const VerificationScreen({super.key, required this.email});
+  Admin admin;
+  VerificationScreen({super.key, required this.email, required this.admin});
 
   @override
   State<VerificationScreen> createState() => _VerificationScreenState();
@@ -106,7 +108,7 @@ class _VerificationScreenState extends State<VerificationScreen> {
                         context,
                         MaterialPageRoute(
                             builder: (context) =>
-                                ResetPasswordScreen(email: widget.email)));
+                                ResetPasswordScreen(email: widget.email, admin: widget.admin)));
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(content: Text("Invalid OTP"),

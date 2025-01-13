@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/models/bulletin.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:http/http.dart' as http;
@@ -11,7 +12,8 @@ import 'package:mymemberlink/views/bulletin/new_bulletin.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class BulletinScreen extends StatefulWidget {
-  const BulletinScreen({super.key});
+  final Admin admin;
+  BulletinScreen({super.key, required this.admin});
 
   @override
   State<BulletinScreen> createState() => _BulletinScreen();
@@ -265,7 +267,7 @@ class _BulletinScreen extends State<BulletinScreen> {
                 ],
               ),
       ),
-      drawer: MainScreenDrawer(),
+      drawer: MainScreenDrawer(admin: widget.admin),
       floatingActionButton: FloatingActionButton(
         backgroundColor: Color.fromARGB(255, 178, 78, 255),
         onPressed: () async {
@@ -296,6 +298,7 @@ class _BulletinScreen extends State<BulletinScreen> {
           for (var item in result) {
             Bulletin bulletin = Bulletin.fromJson(item);
             bulletinList.add(bulletin);
+            
           }
           numofpage = int.parse(data['numofpage'].toString());
           numofresult = int.parse(data['numberofresult'].toString());

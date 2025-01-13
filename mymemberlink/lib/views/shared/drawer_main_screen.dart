@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/views/memberships/membership_screen.dart';
-import 'package:mymemberlink/views/memberships/memberships_screen.dart';
 import 'package:mymemberlink/views/bulletin/bulletin_screen.dart';
 import 'package:mymemberlink/views/events/event_screen.dart';
 import 'package:mymemberlink/views/products/product_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 class MainScreenDrawer extends StatelessWidget {
-  const MainScreenDrawer({super.key});
+  final Admin admin;
+  const MainScreenDrawer({super.key, required this.admin});  
 
   @override
   Widget build(BuildContext context) {
@@ -42,7 +43,7 @@ class MainScreenDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (content) => const BulletinScreen()));
+                  MaterialPageRoute(builder: (content) =>  BulletinScreen(admin: admin)));
             },
           ),
           ListTile(
@@ -57,7 +58,7 @@ class MainScreenDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (content) => const EventScreen()));
+                  MaterialPageRoute(builder: (content) =>  EventScreen(admin: admin)));
             },
           ),
           ListTile(
@@ -71,7 +72,7 @@ class MainScreenDrawer extends StatelessWidget {
               ),
             ),onTap:() {
               Navigator.push(context, 
-                        MaterialPageRoute(builder: (content)=> const MembershipScreen()));
+                        MaterialPageRoute(builder: (content)=>  MembershipScreen(admin: admin)));
             }
             ),
           ListTile(
@@ -97,7 +98,7 @@ class MainScreenDrawer extends StatelessWidget {
             ),
             onTap: () {
               Navigator.push(context,
-                  MaterialPageRoute(builder: (content) => const ProductScreen()));
+                  MaterialPageRoute(builder: (content) => ProductScreen(admin: admin)));
             },
           ),
           ListTile(

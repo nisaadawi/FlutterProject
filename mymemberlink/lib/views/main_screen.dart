@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/views/shared/drawer_main_screen.dart'; // Ensure this path is correct
 
 class MainScreen extends StatefulWidget {
-  const MainScreen({super.key});
+  final Admin admin;
+  MainScreen({super.key, required this.admin}); // Add this line
 
   @override
   State<MainScreen> createState() => _MainScreenState();
@@ -12,7 +14,7 @@ class _MainScreenState extends State<MainScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      drawer: MainScreenDrawer(), // Attach your drawer here
+      drawer: MainScreenDrawer(admin: widget.admin), // Attach your drawer here
       body: Stack(
         children: [
           Container(

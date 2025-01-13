@@ -3,14 +3,16 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/models/myproduct.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:http/http.dart' as http;
 import 'package:mymemberlink/views/products/product_screen.dart';
 
 class ProductDetailScreen extends StatefulWidget {
+  final Admin admin;
   final MyProduct myproduct;
-  const ProductDetailScreen({super.key, required this.myproduct});
+  const ProductDetailScreen({super.key, required this.myproduct, required this.admin});
 
   @override
   State<ProductDetailScreen> createState() => _ProductDetailScreen();
@@ -67,7 +69,7 @@ class _ProductDetailScreen extends State<ProductDetailScreen> {
         leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (content) => ProductScreen())); // Go back to the previous screen
+            Navigator.push(context, MaterialPageRoute(builder: (content) => ProductScreen(admin: widget.admin))); // Go back to the previous screen
           },
         ),
       ),
@@ -270,7 +272,7 @@ class _ProductDetailScreen extends State<ProductDetailScreen> {
               ),
               onPressed: () async {
                 await insertCart();
-                Navigator.push(context, MaterialPageRoute(builder: (content) => ProductScreen())); // Go back to the previous screen
+                Navigator.push(context, MaterialPageRoute(builder: (content) => ProductScreen(admin: widget.admin))); // Go back to the previous screen
               },
             ),
             TextButton(

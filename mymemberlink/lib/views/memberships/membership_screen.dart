@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/models/mymembership.dart';
 import 'package:mymemberlink/myconfig.dart';
 import 'package:mymemberlink/views/memberships/membership_detail.dart';
@@ -8,7 +9,8 @@ import 'package:mymemberlink/views/shared/drawer_main_screen.dart';
 import 'package:http/http.dart' as http;
 
 class MembershipScreen extends StatefulWidget {
-  const MembershipScreen({super.key});
+  final Admin admin;
+  const MembershipScreen({super.key, required this.admin});
 
   @override
   State<MembershipScreen> createState() => _MembershipScreenState();
@@ -35,7 +37,7 @@ class _MembershipScreenState extends State<MembershipScreen> {
     final appBarHeight = isPortrait ? 145.0 : 90.0; // Set height
 
     return Scaffold(
-      drawer: const MainScreenDrawer(),
+      drawer: MainScreenDrawer(admin: widget.admin),
       appBar: AppBar(
         title: Text(
           "Memberships",
@@ -285,7 +287,8 @@ class _MembershipScreenState extends State<MembershipScreen> {
                                                   builder: (content) =>
                                                       MembershipDetail(
                                                           myMembership:
-                                                              myMembership),
+                                                              myMembership,
+                                                          admin: widget.admin),
                                                 ),
                                               );
                                             },

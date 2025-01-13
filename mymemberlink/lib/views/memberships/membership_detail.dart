@@ -1,12 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/models/mymembership.dart';
 import 'package:mymemberlink/views/memberships/membership_screen.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+import 'package:mymemberlink/views/payments/payment_screen.dart';
 
 class MembershipDetail extends StatefulWidget {
   final MyMembership myMembership;
-  const MembershipDetail({super.key, required this.myMembership});
+  final Admin admin;
+  const MembershipDetail({super.key, required this.myMembership, required this.admin});
 
   @override
   State<MembershipDetail> createState() => _MembershipDetailState();
@@ -21,7 +23,8 @@ class _MembershipDetailState extends State<MembershipDetail> {
   @override
   void initState() {
     super.initState();
-    _loadEmail();
+     emailController.text = widget.admin.adminemail ?? '';
+     print('Admin Email: ${widget.admin.adminemail}');
   }
   
 
@@ -80,7 +83,7 @@ class _MembershipDetailState extends State<MembershipDetail> {
          leading: IconButton(
           icon: const Icon(Icons.arrow_back, color: Colors.white),
           onPressed: () {
-            Navigator.push(context, MaterialPageRoute(builder: (content) => const MembershipScreen())); // Go back to the previous screen
+            Navigator.push(context, MaterialPageRoute(builder: (content) =>  MembershipScreen(admin: widget.admin,))); // Go back to the previous screen
           },
         ),
       ),
@@ -240,7 +243,7 @@ class _MembershipDetailState extends State<MembershipDetail> {
                                   alignment: Alignment.centerRight,
                                   child: ElevatedButton(
                                     onPressed: () async {
-                                      Navigator.push(context, MaterialPageRoute(builder: (content) => const MembershipScreen())); // Go back to the previous screen
+                                      Navigator.push(context, MaterialPageRoute(builder: (content) => MembershipScreen(admin: widget.admin))); // Go back to the previous screen
                                     },
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: Colors.white,
@@ -360,7 +363,10 @@ class _MembershipDetailState extends State<MembershipDetail> {
                 ),
                 Align(
                     child: ElevatedButton(
-                  onPressed: () {},
+                  onPressed: () {
+                    Navigator.push(
+                      context, MaterialPageRoute(builder: (content) => PaymentScreen(myMembership: widget.myMembership))); // Go back to the previous screen
+                  },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(240, 230, 189, 6),
                     shape: RoundedRectangleBorder(
@@ -393,14 +399,5 @@ class _MembershipDetailState extends State<MembershipDetail> {
     List<String> lines = str.split('\n');
     return lines.map((line) => '⭐ $line').join('\n');
   }
-  Future<void> _loadEmail() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-    String? email = prefs.getString("email");
-    setState(() {
-      adminEmail = email;
-      if (adminEmail != null) {
-        emailController.text = adminEmail!; // Pre-fill the TextFormField
-      }
-    });
-  }
+  
 }

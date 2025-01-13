@@ -1,9 +1,11 @@
 import 'package:email_otp/email_otp.dart';
 import 'package:flutter/material.dart';
+import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/views/auth/verify_otp_screen.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
-const ForgotPasswordScreen({super.key});
+  Admin admin;
+  ForgotPasswordScreen({super.key, required this.admin});
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -109,7 +111,7 @@ Widget build(BuildContext context) {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (content) => VerificationScreen(email: emailController.text),
+          builder: (content) => VerificationScreen(email: emailController.text, admin: widget.admin),
         ),
       );
     } else {
