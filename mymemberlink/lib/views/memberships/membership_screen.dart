@@ -279,16 +279,13 @@ class _MembershipScreenState extends State<MembershipScreen> {
                                           child: ElevatedButton(
                                             onPressed: () async {
                                               Navigator.pop(context);
-                                              MyMembership myMembership =
-                                                  membershiplist[index];
+                                              MyMembership myMembership = membershiplist[index];
+
                                               await Navigator.push(
                                                 context,
-                                                MaterialPageRoute(
-                                                  builder: (content) =>
-                                                      MembershipDetail(
-                                                          myMembership:
-                                                              myMembership,
-                                                          admin: widget.admin),
+                                                MaterialPageRoute( builder: (content) =>
+                                                 MembershipDetail(myMembership:myMembership,
+                                                                   admin: widget.admin),
                                                 ),
                                               );
                                             },

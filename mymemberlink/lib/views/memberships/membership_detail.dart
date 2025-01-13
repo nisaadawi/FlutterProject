@@ -24,7 +24,8 @@ class _MembershipDetailState extends State<MembershipDetail> {
   void initState() {
     super.initState();
      emailController.text = widget.admin.adminemail ?? '';
-     print('Admin Email: ${widget.admin.adminemail}');
+     addressController.text = widget.admin.adminaddress ?? '';
+     print("SINI, ${widget.myMembership.membershipName}");
   }
   
 
@@ -307,6 +308,7 @@ class _MembershipDetailState extends State<MembershipDetail> {
                           TextFormField(
                             controller: emailController,
                             keyboardType: TextInputType.emailAddress,
+                            enabled: false,
                             decoration: InputDecoration(
                               prefixIcon: const Icon(Icons.email_outlined,
                                   color: Color.fromARGB(255, 90, 0, 150)),
@@ -365,7 +367,7 @@ class _MembershipDetailState extends State<MembershipDetail> {
                     child: ElevatedButton(
                   onPressed: () {
                     Navigator.push(
-                      context, MaterialPageRoute(builder: (content) => PaymentScreen(myMembership: widget.myMembership))); // Go back to the previous screen
+                      context, MaterialPageRoute(builder: (content) => PaymentScreen(myMembership: widget.myMembership, admin: widget.admin,))); // Go back to the previous screen
                   },
                   style: ElevatedButton.styleFrom(
                     backgroundColor: const Color.fromARGB(240, 230, 189, 6),

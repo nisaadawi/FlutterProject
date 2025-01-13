@@ -3,6 +3,7 @@ import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/views/memberships/membership_screen.dart';
 import 'package:mymemberlink/views/bulletin/bulletin_screen.dart';
 import 'package:mymemberlink/views/events/event_screen.dart';
+import 'package:mymemberlink/views/payments/payment_history.dart';
 import 'package:mymemberlink/views/products/product_screen.dart';
 import 'package:google_fonts/google_fonts.dart';
 
@@ -21,14 +22,6 @@ class MainScreenDrawer extends StatelessWidget {
               color: Color.fromARGB(255, 80, 17, 148), // Purple color for the header
             ),
             child: Center(
-              // child: Text(
-              //   'Drawer Header',
-              //   style: TextStyle(
-              //     color: Colors.white,
-              //     fontSize: 24,
-              //     fontWeight: FontWeight.bold,
-              //   ),
-              // ),
             ),
           ),
           ListTile(
@@ -78,13 +71,16 @@ class MainScreenDrawer extends StatelessWidget {
           ListTile(
             leading: const Icon(Icons.payment, color: Colors.white), // Payment icon
             title: Text(
-              "Payment",
+              "Payment History",
               style: GoogleFonts.montserrat(
-                fontSize: 20,
+                fontSize: 18,
                 fontWeight: FontWeight.bold,
                 color: Colors.white, // White color for text
               ),
-            ),
+            ),onTap: () {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (content) =>  PaymentHistory(admin: admin)));
+            },
           ),
           ListTile(
             leading: const Icon(Icons.production_quantity_limits, color: Colors.white), // Product icon
