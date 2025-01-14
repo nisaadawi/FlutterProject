@@ -11,6 +11,75 @@ class MainScreenDrawer extends StatelessWidget {
   final Admin admin;
   const MainScreenDrawer({super.key, required this.admin});  
 
+  void _showLogoutDialog(BuildContext context) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: Column(
+            children: [
+              Icon(
+                Icons.logout_rounded,
+                size: 50,
+                color: Colors.red[700],
+              ),
+              const SizedBox(height: 10),
+              Text(
+                'Logout',
+                style: GoogleFonts.montserrat(
+                  fontWeight: FontWeight.bold,
+                  color: Colors.red[700],
+                ),
+              ),
+            ],
+          ),
+          content: Text(
+            'Are you sure you want to logout?',
+            style: GoogleFonts.montserrat(
+              fontSize: 14,
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.of(context).pop(),
+              child: Text(
+                'Cancel',
+                style: GoogleFonts.montserrat(
+                  color: Colors.grey[600],
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                  '/login',
+                  (Route<dynamic> route) => false,
+                );
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.red[700],
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20),
+                ),
+              ),
+              child: Text(
+                'Logout',
+                style: GoogleFonts.montserrat(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Drawer(
@@ -118,6 +187,27 @@ class MainScreenDrawer extends StatelessWidget {
                 color: Colors.white, // White color for text
               ),
             ),
+          ),
+          const Divider(  // Add a divider before logout
+            color: Colors.white24,
+            thickness: 1,
+            indent: 20,
+            endIndent: 20,
+          ),
+          ListTile(
+            leading: const Icon(
+              Icons.logout_rounded, 
+              color: Colors.white,
+            ),
+            title: Text(
+              "Logout",
+              style: GoogleFonts.montserrat(
+                fontSize: 20,
+                fontWeight: FontWeight.bold,
+                color: Colors.white,
+              ),
+            ),
+            onTap: () => _showLogoutDialog(context),
           ),
         ],
       ),

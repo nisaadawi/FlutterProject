@@ -1,13 +1,23 @@
 import 'package:flutter/material.dart';
 import 'package:mymemberlink/models/admin.dart';
 import 'package:mymemberlink/models/mymembership.dart';
+import 'package:mymemberlink/models/payment.dart';
+import 'package:mymemberlink/myconfig.dart';
+import 'package:mymemberlink/views/payments/payment_history.dart';
 import 'package:webview_flutter/webview_flutter.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
+import 'package:google_fonts/google_fonts.dart';
 
 class PaymentScreen extends StatefulWidget {
   final Admin admin;
   final MyMembership myMembership;
 
-  const PaymentScreen({super.key, required this.myMembership, required this.admin});
+  const PaymentScreen({
+    super.key, 
+    required this.myMembership, 
+    required this.admin, 
+  });
 
   @override
   State<PaymentScreen> createState() => _PaymentScreenState();
@@ -78,19 +88,32 @@ class _PaymentScreenState extends State<PaymentScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Payment'),
+        title: Text(
+          "Payment",
+          style: GoogleFonts.lexendTera(
+            color: const Color.fromARGB(252, 255, 255, 255),
+            fontSize: 25.5,
+            fontWeight: FontWeight.bold,
+            shadows: [
+              const Shadow(
+                offset: Offset(2.0, 2.0),
+                blurRadius: 4.0,
+                color: Color.fromARGB(128, 65, 3, 87),
+              ),
+            ],
+          ),
+        ),
+        centerTitle: true,
+        backgroundColor: const Color.fromARGB(255, 127, 0, 200),
         leading: IconButton(
-          icon: const Icon(Icons.arrow_back),
-          onPressed: () => Navigator.of(context).pop(),
+          icon: const Icon(Icons.arrow_back, color: Colors.white),
+          onPressed: (){
+            Navigator.push(context, MaterialPageRoute(builder: (context) => PaymentHistory(admin: widget.admin)));
+          },
         ),
       ),
-      body: Stack(
-        children: [
-          WebViewWidget(
-            controller: wvcontroller,
-          ),
-          // You can add a loading indicator here
-        ],
+      body: WebViewWidget(
+        controller: wvcontroller,
       ),
     );
   }

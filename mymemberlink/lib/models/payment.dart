@@ -1,4 +1,4 @@
-class MyProduct {
+class Payment {
   String? paymentId;
   String? billplzId;
   String? adminEmail;
@@ -9,7 +9,7 @@ class MyProduct {
   String? paymentStatus;
   String? datePurchased;
 
-  MyProduct(
+  Payment(
       {this.paymentId,
       this.billplzId,
       this.adminEmail,
@@ -20,7 +20,7 @@ class MyProduct {
       this.paymentStatus,
       this.datePurchased});
 
-  MyProduct.fromJson(Map<String, dynamic> json) {
+  Payment.fromJson(Map<String, dynamic> json) {
     paymentId = json['payment_id'];
     billplzId = json['billplz_id'];
     adminEmail = json['admin_email'];

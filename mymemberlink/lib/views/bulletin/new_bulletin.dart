@@ -168,8 +168,7 @@ class _NewBulletinScreenState extends State<NewBulletinScreen> {
     http.post(
         Uri.parse("${MyConfig.servername}/memberlink/api/insert_news.php"),
         body: {"title": title, "details": details}).then((response) {
-      // print(response.statusCode);
-      // print(response.body);
+    
       if (response.statusCode == 200) {
         var data = jsonDecode(response.body);
         if (data['status'] == "success") {

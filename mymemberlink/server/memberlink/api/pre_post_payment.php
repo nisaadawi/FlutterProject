@@ -28,50 +28,124 @@ foreach ($billplz_data as $key => $value) {
         $signing .= '|';
     }
 }
-
+ 
 $x_signature = hash_hmac('sha256', $signing, '5e918c1697e5e5986b43d47a513b7dbc3268cc120cca16b71595368c572df84ba4d8cf99266783a14c222c4632bb04409f26523a16a46f8c2453489ef9fbcb0f');
 
 if ($x_signature === $billplz_data['x_signature']) {
     $payment_status = $billplz_data['paid'];
     if ($payment_status == "true") {
         $payment_status = "Success";
-    } else {
+    } else if ($payment_status == "false") {
         $payment_status = "Failed";
+    } else {
+        $payment_status = "Pending";
     }
 
     $billplz_id = $billplz_data['id'];
-    $date_purchased = date('Y-m-d H:i:s'); // Current datetime
+    $date_purchased = date('Y-m-d H:i:s');
 
-    // Save to database if payment is successful
-    if ($payment_status == "Success") {
-        $sqlinsert = "INSERT INTO `tbl_payment` 
-                      (`billplz_id`, `admin_email`, `admin_phone`, `admin_name`, 
-                       `price`, `membership_name`, `payment_status`, `date_purchased`) 
-                      VALUES 
-                      (?, ?, ?, ?, ?, ?, ?, ?)";
-                      
-        $stmt = $conn->prepare($sqlinsert);
-        $stmt->bind_param('ssssdsss', 
-            $billplz_id,
-            $admin_email,
-            $admin_phone,
-            $admin_name,
-            $price,
-            $member_type,
-            $payment_status,
-            $date_purchased
-        );
-        
-        try {
-            $stmt->execute();
-            error_log("Payment record inserted successfully");
-        } catch (Exception $e) {
-            error_log("Error inserting payment record: " . $e->getMessage());
+    try {
+        // First check if this billplz_id already exists
+        $sqlcheck = "SELECT payment_id, payment_status FROM tbl_payment WHERE billplz_id = ?";
+        $checkStmt = $conn->prepare($sqlcheck);
+        $checkStmt->bind_param('s', $billplz_id);
+        $checkStmt->execute();
+        $result = $checkStmt->get_result();
+
+        if ($result->num_rows > 0) {
+            // Payment record exists, update if status changed to Success
+            $row = $result->fetch_assoc();
+            if ($payment_status == "Success" && $row['payment_status'] != "Success") {
+                // Start transaction
+                $conn->begin_transaction();
+                
+                try {
+                    // 1. Update payment status
+                    $sqlupdate = "UPDATE tbl_payment 
+                                 SET payment_status = ?, date_purchased = ? 
+                                 WHERE billplz_id = ?";
+                    $updateStmt = $conn->prepare($sqlupdate);
+                    $updateStmt->bind_param('sss', 
+                        $payment_status,
+                        $date_purchased,
+                        $billplz_id
+                    );
+                    $updateStmt->execute();
+                    
+                    // 2. Update admin's member_type
+                    $sqlupdateAdmin = "UPDATE tbl_admin 
+                                     SET member_type = ? 
+                                     WHERE admin_email = ?";
+                    $updateAdminStmt = $conn->prepare($sqlupdateAdmin);
+                    $updateAdminStmt->bind_param('ss', 
+                        $member_type,
+                        $admin_email
+                    );
+                    $updateAdminStmt->execute();
+                    
+                    // If both queries successful, commit transaction
+                    $conn->commit();
+                    error_log("Payment and admin member_type updated successfully for billplz_id: $billplz_id");
+                    
+                } catch (Exception $e) {
+                    // If any query fails, rollback changes
+                    $conn->rollback();
+                    throw $e;
+                }
+            }
+        } else {
+            // Start transaction for new payment
+            $conn->begin_transaction();
+            
+            try {
+                // 1. Insert new payment record
+                $sqlinsert = "INSERT INTO tbl_payment 
+                              (billplz_id, admin_email, admin_phone, admin_name, 
+                               price, membership_name, payment_status, date_purchased) 
+                              VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+                $insertStmt = $conn->prepare($sqlinsert);
+                $insertStmt->bind_param('ssssdsss', 
+                    $billplz_id,
+                    $admin_email,
+                    $admin_phone,
+                    $admin_name,
+                    $price,
+                    $member_type,
+                    $payment_status,
+                    $date_purchased
+                );
+                $insertStmt->execute();
+                
+                // 2. If payment is successful, update admin's member_type
+                if ($payment_status == "Success") {
+                    $sqlupdateAdmin = "UPDATE tbl_admin 
+                                     SET member_type = ? 
+                                     WHERE admin_email = ?";
+                    $updateAdminStmt = $conn->prepare($sqlupdateAdmin);
+                    $updateAdminStmt->bind_param('ss', 
+                        $member_type,
+                        $admin_email
+                    );
+                    $updateAdminStmt->execute();
+                }
+                
+                // If both queries successful, commit transaction
+                $conn->commit();
+                error_log("New payment record inserted and admin updated for billplz_id: $billplz_id");
+                
+            } catch (Exception $e) {
+                // If any query fails, rollback changes
+                $conn->rollback();
+                throw $e;
+            }
         }
+
+    } catch (Exception $e) {
+        error_log("Error processing payment: " . $e->getMessage());
     }
 
     // Generate receipt
-    echo "
+         echo "
         <!DOCTYPE html>
         <html lang=\"en\">
         <head>
